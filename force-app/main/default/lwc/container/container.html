@@ -1,0 +1,15 @@
+<template>
+    <lightning-card>
+        <div>
+            <p>Name = {selectedOption.Name}, Id = {selectedOption.Id}</p>
+        </div>
+        <div>
+            <c-dropdown-lookup 
+                s-object-name="Contact" 
+                lookup-label="Some label"
+                name-like-using-sql-syntax="%_%"
+                onchange={handleChange}
+            ></c-dropdown-lookup>
+        </div>
+    </lightning-card>
+</template>

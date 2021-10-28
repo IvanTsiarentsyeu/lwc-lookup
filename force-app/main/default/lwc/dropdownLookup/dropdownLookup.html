@@ -1,0 +1,59 @@
+<!-- Autocomplete Combobox -->
+<template>
+    <template if:true={options}>
+    <div class="slds-form-element">
+        <label class={labelClass} for="dropdown-lookup">{lookupLabel}</label>
+        <div class="slds-form-element_control">
+            <div class="slds-combobox_container">
+                <div class={showDropdownClass} aria-expanded="true" aria-haspopup="listbox" role="combobox">
+
+                    <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+                        <input type="text" 
+                            class="slds-input slds-combobox__input" 
+                            id="searchbox-id" 
+                            aria-autocomplete="list" 
+                            aria-controls="listbox-id" 
+                            aria-expanded="false" 
+                            aria-haspopup="listbox" 
+                            autocomplete="off" 
+                            role="combobox" 
+                            placeholder="Search..."
+                            value={searchKey}
+                            oninput={handleKeyChange}
+                            onclick={handleInputClick}
+                            onblur={handleBlur}
+                            ></input>
+                </div>
+
+                        <div id="listbox-id" class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid" role="listbox">
+                            
+                            <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                           
+                                <template for:each={options} for:item="option">
+                                    <li key={option.Id}
+                                        data-label={option.Name}
+                                        data-value={option.Id} 
+                                        role="presentation" 
+                                        class="slds-listbox__item" 
+                                        onclick={handleListItemClick}
+                                    >
+                                        <div id={option.Id} class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option">
+                                            <span class="slds-media__figure slds-listbox__option-icon"></span>
+                                            <span class="slds-media__body">
+                                                <span class="slds-truncate">
+                                                    {option.Name}
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </li>
+                                </template>
+                            
+                            </ul>
+                        </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    </template>
+</template>
