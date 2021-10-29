@@ -6,17 +6,18 @@ export default class DropdownLookup extends LightningElement {
     
 
     @api sObjectName;
-    @api lookupLabel;
+    @api label;
+    @api placeholder;
     @api nameLikeUsingSqlSyntax;
     options;
     error;
 
     selectedOption = {
-        Id : 'Some Id',
-        Name : 'Some Name',
+        Id : '',
+        Name : '',
     }
     searchKey = '';
-    dropdownOpen = false;
+    @track dropdownOpen = false;
 
     @wire(selectRecordsFromAnysObject, { sObjectName: '$sObjectName', nameLike: '$nameLikeUsingSqlSyntax', searchKey: '$searchKey' })
     wiredOptions ({ error, data }) {
@@ -52,6 +53,14 @@ export default class DropdownLookup extends LightningElement {
         this.dispatchEvent(newEvent);
     }
 
+    handleReadonlyFocus () {
+   
+        window.clearTimeout(this.delayTimeout);
+        this.delayTimeout = setTimeout(() => {
+            if (this.selectedOption.Id === '') this.dropdownOpen = true;
+        }, DELAY);    
+    }
+
     handleInputClick(event) {
         this.dropdownOpen = true;
     }
@@ -72,8 +81,16 @@ export default class DropdownLookup extends LightningElement {
         }, DELAY);       
     }
 
+    handleDeleteButton() {
+        console.log('delete pressed');
+    }
+    
+    get showDropdown(){
+        return this.dropdownOpen;
+    }
+
     get labelClass () {
-        if (this.lookupLabel && this.lookupLabel != '') {
+        if (this.label && this.label != '') {
             return "slds-form-element__label slds-show";
         } else {
             return "slds-form-element__label slds-hide";
