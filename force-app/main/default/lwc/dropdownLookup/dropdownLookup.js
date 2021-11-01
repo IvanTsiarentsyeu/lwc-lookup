@@ -1,9 +1,11 @@
 import { LightningElement, api, track, wire } from 'lwc';
+import ICONS from "@salesforce/resourceUrl/icons"
 import selectRecordsFromAnysObject from '@salesforce/apex/dropdownLookupController.selectRecordsFromAnysObject';
-const DELAY=300;
+const APEX_DELAY=300;
+const BLUR_DELAY=100;
+
 
 export default class DropdownLookup extends LightningElement {
-    
 
     @api sObjectName;
     @api label;
@@ -12,12 +14,14 @@ export default class DropdownLookup extends LightningElement {
     options;
     error;
 
-    selectedOption = {
+    @track selectedOption = {
         Id : '',
         Name : '',
     }
-    searchKey = '';
-    @track dropdownOpen = false;
+    @track searchKey = '';
+    mouseOverDropdown = false;
+    dropdownOpen = false;
+    highlight = false;
 
     @wire(selectRecordsFromAnysObject, { sObjectName: '$sObjectName', nameLike: '$nameLikeUsingSqlSyntax', searchKey: '$searchKey' })
     wiredOptions ({ error, data }) {
@@ -33,60 +37,85 @@ export default class DropdownLookup extends LightningElement {
 
     connectedCallback() {}
 
-    renderedCallback() {}
+    renderedCallback() {
+        const searchInput = this.template.querySelector('.searchInput');
+        if (searchInput) {
+            searchInput.focus();
+        }
+    }
 
     handleKeyChange(event) {
         window.clearTimeout(this.delayTimeout);
         const searchKey = event.target.value;
         this.delayTimeout = setTimeout(() => {
             this.searchKey = searchKey;
-        }, DELAY);
+        }, APEX_DELAY);
     }
 
     handleListItemClick(event) {
-        this.dropdownOpen = false;
         this.selectedOption.Id = event.target.closest('li').dataset.value;
         this.selectedOption.Name = event.target.closest('li').dataset.label;
         const newEvent = new CustomEvent('change', {
             detail: this.selectedOption,
         });
         this.dispatchEvent(newEvent);
+        this.searchKey = '';
+        this.highlight = true;
+        this.dropdownOpen = false;
     }
 
-    handleReadonlyFocus () {
-   
-        window.clearTimeout(this.delayTimeout);
-        this.delayTimeout = setTimeout(() => {
-            if (this.selectedOption.Id === '') this.dropdownOpen = true;
-        }, DELAY);    
+
+    handleReadonlyInputClick(event) {
+        if (! this.selectedOption.Id) {    
+            this.dropdownOpen = true;
+        }
     }
 
-    handleInputClick(event) {
-        this.dropdownOpen = true;
+    handleSearchClick () {
+        console.log('search pressed');
     }
 
     handleBlur(event) {
-        // console.log('-------------');
-        // console.log(event.target.className);
-        // console.log(event.target.tagName);
-        // console.log(event.currentTarget.className);
-        // console.log(event.currentTarget.tagName);
-        // console.log(event.relatedTarget);
-
-        // ТУТ НАДО ДОРАБОТАТЬ, ЧТОБЫ СПИСОК НЕ ЗАКРЫВАЛСЯ ПРИ НАЖАТИИ НА НЕГО
-
-        window.clearTimeout(this.delayTimeout);
-        this.delayTimeout = setTimeout(() => {
-            this.dropdownOpen = false; 
-        }, DELAY);       
+        if (this.mouseOverDropdown) {
+            const searchInput = this.template.querySelector('.searchInput');
+            if (searchInput) {
+                searchInput.focus();
+            }
+        } else {
+            window.clearTimeout(this.delayTimeout);
+            this.delayTimeout = setTimeout(() => {
+                this.dropdownOpen = false; 
+            }, BLUR_DELAY);
+        }       
     }
 
-    handleDeleteButton() {
-        console.log('delete pressed');
+    handleMouseOverDropdown(event) {
+        this.mouseOverDropdown = true;
     }
-    
-    get showDropdown(){
-        return this.dropdownOpen;
+
+    handleMouseOutDropdown(event) {
+        this.mouseOverDropdown = false;
+    }
+
+    handleClearButton() {
+        this.clearSelectedOption();         
+        this.dropdownOpen = true;
+    }
+
+    handleUndoButton() {
+        this.highlight = false;
+        this.clearSelectedOption(); 
+    }
+
+    clearSelectedOption() {
+        if (this.selectedOption.Id) {
+            this.selectedOption.Id = '';
+            this.selectedOption.Name = '';
+            const newEvent = new CustomEvent('change', {
+                detail: this.selectedOption,
+        });
+        this.dispatchEvent(newEvent);
+        }
     }
 
     get labelClass () {
@@ -97,12 +126,42 @@ export default class DropdownLookup extends LightningElement {
         }       
     }
 
+    get mainDivClass() {
+        if (this.highlight) {
+            return "mainDiv lgc-highlight";
+        } else {
+            return "mainDiv";
+        }
+    }
+
+    get closeIconUrl() {
+        let iconUrl = ICONS + '/utility-sprite/svg/symbols.svg#close';
+        return iconUrl;
+    }
+
+    get showDropdown(){
+        return this.dropdownOpen;
+    }
+
     get showDropdownClass () {
         if (this.dropdownOpen) {
             return "slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open";
         } else {
             return "slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click";
         }     
+    }
+
+    get showSpinner() {
+        // ПОКА НЕ ПОНИМАЮ, К ЧЕМУ ЕГО ПРИЦЕПИТЬ
+        return true;
+    }
+
+    get showUndoAndDelete() {
+        if (this.selectedOption.Id) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 
