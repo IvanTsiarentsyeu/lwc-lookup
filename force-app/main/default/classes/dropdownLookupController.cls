@@ -26,6 +26,8 @@ public with sharing class dropdownLookupController {
     }
 
     private static Boolean sObjectNameIsBad (String sObjectName) {
+        if (sObjectName==null) return true;
+        if (sObjectName.length()==0) return true;
 
         Map<String, Schema.SObjectType> allSobjects = Schema.getGlobalDescribe();
         Set<String> validSObjectNames = allSobjects.keySet();

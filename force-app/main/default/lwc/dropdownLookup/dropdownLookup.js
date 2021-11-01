@@ -11,6 +11,7 @@ export default class DropdownLookup extends LightningElement {
     @api label;
     @api placeholder;
     @api nameLikeUsingSqlSyntax;
+    eventName='change';
     options;
     error;
 
@@ -31,7 +32,7 @@ export default class DropdownLookup extends LightningElement {
         } else if (error) {
             this.error = error;
             this.options = undefined;
-            console.log(this.error);
+            console.error(error);
         }
     }
 
@@ -55,7 +56,7 @@ export default class DropdownLookup extends LightningElement {
     handleListItemClick(event) {
         this.selectedOption.Id = event.target.closest('li').dataset.value;
         this.selectedOption.Name = event.target.closest('li').dataset.label;
-        const newEvent = new CustomEvent('change', {
+        const newEvent = new CustomEvent(this.eventName, {
             detail: this.selectedOption,
         });
         this.dispatchEvent(newEvent);
@@ -72,7 +73,7 @@ export default class DropdownLookup extends LightningElement {
     }
 
     handleSearchClick () {
-        console.log('search pressed');
+        console.warn('search pressed');
     }
 
     handleBlur(event) {
@@ -111,7 +112,7 @@ export default class DropdownLookup extends LightningElement {
         if (this.selectedOption.Id) {
             this.selectedOption.Id = '';
             this.selectedOption.Name = '';
-            const newEvent = new CustomEvent('change', {
+            const newEvent = new CustomEvent(this.eventName, {
                 detail: this.selectedOption,
         });
         this.dispatchEvent(newEvent);

@@ -1,18 +1,53 @@
 <template>
     <lightning-card>
         <div>
-            <p>Name = {selectedOption.Name}, Id = {selectedOption.Id}</p>
+            <p>container v 0.042</p>
+            <p>{sObjectName_1} Name = {selectedOption_1.Name},</p>
+            <p>Id = {selectedOption_1.Id}</p>
+            <p>{sObjectName_2} Name = {selectedOption_2.Name}, </p>
+            <p> Id = {selectedOption_2.Id}</p>
             <br>
-            <p>container v 0.008</p>
+
+            <p class="slds-form-element__label">sObject #1</p>
+            <input type="text" 
+                class="slds-input" 
+                id="searchbox_1-id" 
+                autocomplete="off" 
+                value={sObjectName_1}
+                oninput={handleKeyChange_1}
+            ></input>
+
+            <p class="slds-form-element__label">sObject #2</p>
+            <input type="text" 
+                class="slds-input" 
+                id="searchbox_2-id" 
+                autocomplete="off" 
+                value={sObjectName_2}
+                oninput={handleKeyChange_2}
+            ></input>
+            <br><br>    
         </div>
+
         <div>
+
             <c-dropdown-lookup 
-                s-object-name="Contact" 
-                label="Contact Name"
-                placeholder="Search Contacts..."
+                s-object-name={sObjectName_1} 
+                label={label_1}
+                placeholder={placeholder_1}
                 name-like-using-sql-syntax="%_%"
-                onchange={handleChange}
+                onchange={handleChange_1}
             ></c-dropdown-lookup>
+
+            <br>
+
+            <c-dropdown-lookup 
+                s-object-name={sObjectName_2} 
+                label={label_2}
+                placeholder={placeholder_2}
+                name-like-using-sql-syntax="%_%"
+                onchange={handleChange_2}
+            ></c-dropdown-lookup>
+
         </div>
     </lightning-card>
 </template>
