@@ -26,12 +26,12 @@ public with sharing class dropdownLookupController {
     }
 
     private static Boolean sObjectNameIsBad (String sObjectName) {
-        // ЗАГЛУШКА
-        Set<String> validSObjectNames = new Set<String>();
-        validSObjectNames.add('ACCOUNT');
-        validSObjectNames.add('CONTACT');
-        
-        return ! validSObjectNames.contains(sObjectName.toUpperCase());
+
+        Map<String, Schema.SObjectType> allSobjects = Schema.getGlobalDescribe();
+        Set<String> validSObjectNames = allSobjects.keySet();
+        System.debug(validSObjectNames);
+
+        return ! validSObjectNames.contains(sObjectName.toLowerCase());
     }
 
 }

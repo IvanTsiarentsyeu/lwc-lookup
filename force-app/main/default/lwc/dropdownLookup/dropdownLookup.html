@@ -1,59 +1,163 @@
-<!-- Autocomplete Combobox -->
 <template>
+
+    <p>lookup v 0.148</p>
+    <br>
+    
+<div class={mainDivClass}>
     <template if:true={options}>
     <div class="slds-form-element">
-        <label class={labelClass} for="dropdown-lookup">{lookupLabel}</label>
+        <div class="slds-grid">
+            <div class="slds-col slds-size_10-of-12">
+                <label class={labelClass} for="dropdown-lookup">{label}</label>
+            </div>
+            <div class="slds-col slds-size_2-of-12" align="right">
+
+                <template if:true={showUndoAndDelete}>
+                    <lightning-button-icon
+                        id="upper-button-undo-id"
+                        class="slds-button slds-input__icon slds-text-color__default"
+                        icon-name="utility:undo"
+                        size="medium"
+                        variant="bare"
+                        onclick={handleUndoButton}
+                    ></lightning-button-icon>
+                </template>
+
+            </div>
+        </div>
+
         <div class="slds-form-element_control">
             <div class="slds-combobox_container">
-                <div class={showDropdownClass} aria-expanded="true" aria-haspopup="listbox" role="combobox">
+                <div class={showDropdownClass} 
+                    aria-expanded="true" 
+                    aria-haspopup="listbox" 
+                    role="combobox"
+                >
+                    <!-- READONLY DISPLAY -->
+                    <template if:false={showDropdown}>
+                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right slds-input-has-icon_group-right" role="none">    
 
-                    <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
-                        <input type="text" 
-                            class="slds-input slds-combobox__input" 
-                            id="searchbox-id" 
-                            aria-autocomplete="list" 
-                            aria-controls="listbox-id" 
-                            aria-expanded="false" 
-                            aria-haspopup="listbox" 
-                            autocomplete="off" 
-                            role="combobox" 
-                            placeholder="Search..."
-                            value={searchKey}
-                            oninput={handleKeyChange}
-                            onclick={handleInputClick}
-                            onblur={handleBlur}
+                            <input type="text" 
+                                class="slds-input slds-combobox__input" 
+                                id={selectedOption.Id} 
+                                aria-autocomplete="list" 
+                                aria-controls="listbox-id" 
+                                aria-expanded="true" 
+                                aria-haspopup="listbox" 
+                                autocomplete="off" 
+                                role="combobox" 
+                                placeholder={placeholder}
+                                value={selectedOption.Name}
+                                onclick={handleReadonlyInputClick}
+                                readonly
                             ></input>
-                </div>
 
-                        <div id="listbox-id" class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid" role="listbox">
-                            
-                            <ul class="slds-listbox slds-listbox_vertical" role="presentation">
-                           
-                                <template for:each={options} for:item="option">
-                                    <li key={option.Id}
-                                        data-label={option.Name}
-                                        data-value={option.Id} 
-                                        role="presentation" 
-                                        class="slds-listbox__item" 
-                                        onclick={handleListItemClick}
-                                    >
-                                        <div id={option.Id} class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option">
-                                            <span class="slds-media__figure slds-listbox__option-icon"></span>
-                                            <span class="slds-media__body">
-                                                <span class="slds-truncate">
-                                                    {option.Name}
-                                                </span>
-                                            </span>
-                                        </div>
-                                    </li>
-                                </template>
-                            
-                            </ul>
+                            <!-- lightning-button-icon НЕ СМОГ ЗАСТАВИТЬ РАБОТАТь КАК КНОПКУ ВНУТРИ input -->
+                            <template if:true={showUndoAndDelete}>
+                                <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" 
+                                    title="Clear" onclick={handleClearButton}>
+                                      <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
+                                        <use xlink:href={closeIconUrl}></use>
+                                    </svg>
+                                      <span class="slds-assistive-text">Clear</span>
+                                </button>
+                            </template>
+
+                            <template if:false={showUndoAndDelete}>
+                                <lightning-button-icon
+                                    class="slds-button slds-input__icon slds-text-color__default"
+                                    icon-name="utility:search"
+                                    size="medium"
+                                    variant="bare"
+                                ></lightning-button-icon>
+                            </template>
+                                 
                         </div>
+                    </template>
+                    <!-- end OF READONLY -->
+
+                    <template if:true={showDropdown}>
+                        <!-- SEARCH -->
+                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right slds-input-has-icon_group-right" role="none">    
+                        
+                            <input type="text" 
+                                class="slds-input slds-combobox__input searchInput" 
+                                id="searchbox-id" 
+                                data-name="searchInput"
+                                aria-autocomplete="list" 
+                                aria-controls="listbox-id" 
+                                aria-expanded="true" 
+                                aria-haspopup="listbox" 
+                                autocomplete="off" 
+                                role="combobox" 
+                                placeholder={placeholder}
+                                value={searchKey}
+                                oninput={handleKeyChange}
+                                onclick={handleSearchClick}
+                                onblur={handleBlur}
+                            ></input>
+
+                            <div class="slds-input__icon-group slds-input__icon-group_right">
+
+                                <template if:true={showSpinner}>
+                                    <div role="status" class="slds-spinner slds-spinner_brand slds-spinner_x-small slds-input__spinner">
+                                        <span class="slds-assistive-text">Loading</span>
+                                        <div class="slds-spinner__dot-a"></div>
+                                        <div class="slds-spinner__dot-b"></div>
+                                    </div>
+                                </template>
+
+                                <lightning-button-icon
+                                    class="slds-button slds-input__icon slds-text-color__default"
+                                    icon-name="utility:search"
+                                    size="medium"
+                                    variant="bare"
+                                ></lightning-button-icon>
+
+                            </div>
+                        </div>                        
+                        <!-- end OF SEARCH -->
+                    </template>
+
+                    <div id="listbox-id" 
+                        class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid dropdown" 
+                        role="listbox"
+                        onmouseover={handleMouseOverDropdown}
+                        onmouseout={handleMouseOutDropdown}
+                    >
+                        
+                        <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                       
+                            <template for:each={options} for:item="option">
+                                <li key={option.Id}
+                                    data-label={option.Name}
+                                    data-value={option.Id} 
+                                    role="presentation" 
+                                    class="slds-listbox__item" 
+                                    onclick={handleListItemClick}
+                                >
+                                    <div id={option.Id} 
+                                        class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" 
+                                        role="option"
+                                    >
+                                        <span class="slds-media__figure slds-listbox__option-icon"></span>
+                                        <span class="slds-media__body">
+                                            <span class="slds-truncate">
+                                                {option.Name}
+                                            </span>
+                                        </span>
+                                    </div>
+                                </li>
+                            </template>
+                        
+                        </ul>
+                        
+                    </div>
 
                 </div>
             </div>
         </div>
     </div>
     </template>
+</div>
 </template>

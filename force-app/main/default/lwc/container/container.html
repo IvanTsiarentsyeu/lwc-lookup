@@ -2,11 +2,14 @@
     <lightning-card>
         <div>
             <p>Name = {selectedOption.Name}, Id = {selectedOption.Id}</p>
+            <br>
+            <p>container v 0.008</p>
         </div>
         <div>
             <c-dropdown-lookup 
                 s-object-name="Contact" 
-                lookup-label="Some label"
+                label="Contact Name"
+                placeholder="Search Contacts..."
                 name-like-using-sql-syntax="%_%"
                 onchange={handleChange}
             ></c-dropdown-lookup>
