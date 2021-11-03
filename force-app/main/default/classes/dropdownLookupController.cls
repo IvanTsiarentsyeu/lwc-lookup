@@ -1,17 +1,21 @@
 public with sharing class dropdownLookupController {
 
     @AuraEnabled (cacheable=true)
-    public static List<sObject> selectRecordsFromAnysObject(String sObjectName, String nameLike, String searchKey) {
+    public static List<sObject> selectRecordsFromAnysObject(String sObjectName, String fields,
+            String mainField, String clause, String searchKey) {
 
-        if (nameLike == null) nameLike='';
         if (searchKey == null) searchKey='';
+        if (clause == null) clause='';
         if (sObjectNameIsBad(sObjectName)) return new List<sObject>();
-
+        if (fieldsAreBad(fields, mainField)) return new List<sObject>();
         String search = '%' + searchKey + '%';
-        String query = 'SELECT Id, Name FROM '+ sObjectName + ' WHERE Name LIKE :search';
+        String query = 'SELECT ' + fields + ' FROM '+ sObjectName + ' WHERE Name LIKE :search';
 
-        if (nameLike.length() >0) {
-            query = query + ' AND Name LIKE :nameLike';
+        if (clause.length() >0) {
+            query = query + ' AND ' + clause;
+        }
+        if (mainField.length() > 0) {
+            query = query + ' ORDER BY '+ mainField;
         }
 
         System.debug(query);
@@ -34,6 +38,11 @@ public with sharing class dropdownLookupController {
         System.debug(validSObjectNames);
 
         return ! validSObjectNames.contains(sObjectName.toLowerCase());
+    }
+
+    private static Boolean fieldsAreBad(String fields, String mainField) {
+        //  ЗАГЛУШКА
+        return false;
     }
 
 }

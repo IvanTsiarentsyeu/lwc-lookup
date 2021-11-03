@@ -8,35 +8,65 @@ const BLUR_DELAY=100;
 export default class DropdownLookup extends LightningElement {
 
     @api sObjectName;
+    @api commaSeparatedFields;
+    @api displayFieldName;
+    @api sqlWhereClause;
     @api label;
     @api placeholder;
-    @api nameLikeUsingSqlSyntax;
-    eventName='change';
+
+    wired;
     options;
     error;
 
-    @track selectedOption = {
-        Id : '',
-        Name : '',
-    }
+    @track selectedOption;
+
     @track searchKey = '';
     mouseOverDropdown = false;
     dropdownOpen = false;
     highlight = false;
 
-    @wire(selectRecordsFromAnysObject, { sObjectName: '$sObjectName', nameLike: '$nameLikeUsingSqlSyntax', searchKey: '$searchKey' })
+    @wire(selectRecordsFromAnysObject, { sObjectName: '$sObjectName', 
+                                         fields:'$commaSeparatedFields', 
+                                         mainField: '$displayFieldName',
+                                         clause:'$sqlWhereClause', 
+                                         searchKey: '$searchKey' })
     wiredOptions ({ error, data }) {
         if (data) {
-            this.options = data;
-            this.error = undefined;      
+            
+            this.error = undefined;
+            this.options = [];
+            data.forEach(option => {
+                let newOption = {};
+                const keys = Object.keys(option);
+                keys.forEach(key => {
+                    newOption[key] = option[key];
+                });
+                newOption['fieldToDisplay'] = option[this.displayFieldName];
+                this.options.push(newOption);
+            });
+
+
+            // this.wired = data;
+            // this.error = undefined;
+            // this.options = [];
+            // this.wired.forEach(option => {
+            //     let newOption = {};
+            //     newOption['fieldToDisplay'] = option[this.displayFieldName];
+            //     newOption.Name = option.Name;
+            //     newOption.Id = option.Id;
+            //     this.options.push(newOption);
+            // });
         } else if (error) {
             this.error = error;
+            this.wired = undefined;
             this.options = undefined;
             console.error(error);
         }
     }
 
-    connectedCallback() {}
+    connectedCallback() {
+        this.selectedOption={};
+    }
 
     renderedCallback() {
         const searchInput = this.template.querySelector('.searchInput');
@@ -54,9 +84,17 @@ export default class DropdownLookup extends LightningElement {
     }
 
     handleListItemClick(event) {
-        this.selectedOption.Id = event.target.closest('li').dataset.value;
-        this.selectedOption.Name = event.target.closest('li').dataset.label;
-        const newEvent = new CustomEvent(this.eventName, {
+        const selectedId = event.target.closest('li').dataset.value;
+        this.options.forEach(option => {
+            if (selectedId === option.Id) {
+                const keys = Object.keys(option)
+                keys.forEach (key => {
+                    this.selectedOption[key] = option[key];
+                })
+            }
+        })
+        delete this.selectedOption['fieldToDisplay'];
+        const newEvent = new CustomEvent('change', {
             detail: this.selectedOption,
         });
         this.dispatchEvent(newEvent);
@@ -110,11 +148,13 @@ export default class DropdownLookup extends LightningElement {
 
     clearSelectedOption() {
         if (this.selectedOption.Id) {
-            this.selectedOption.Id = '';
-            this.selectedOption.Name = '';
-            const newEvent = new CustomEvent(this.eventName, {
+            const keys = Object.keys(this.selectedOption);
+            keys.forEach (key => {
+                this.selectedOption[key] = ''
+            })
+            const newEvent = new CustomEvent('change', {
                 detail: this.selectedOption,
-        });
+            });
         this.dispatchEvent(newEvent);
         }
     }
@@ -138,6 +178,14 @@ export default class DropdownLookup extends LightningElement {
     get closeIconUrl() {
         let iconUrl = ICONS + '/utility-sprite/svg/symbols.svg#close';
         return iconUrl;
+    }
+
+    get selectedOptionDisplayField () {
+        if (this.selectedOption[this.displayFieldName]) {
+            return this.selectedOption[this.displayFieldName];
+        } else {
+            return '';
+        }
     }
 
     get showDropdown(){

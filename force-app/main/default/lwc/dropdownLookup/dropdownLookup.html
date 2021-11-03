@@ -1,5 +1,5 @@
 <template>
-    <p>lookup v 0.155</p>
+    <p>lookup v 0.172</p>
 <div class={mainDivClass}>
     <template if:true={options}>
     <div class="slds-form-element">
@@ -44,7 +44,7 @@
                                 autocomplete="off" 
                                 role="combobox" 
                                 placeholder={placeholder}
-                                value={selectedOption.Name}
+                                value={selectedOptionDisplayField}
                                 onclick={handleReadonlyInputClick}
                                 readonly
                             ></input>
@@ -129,7 +129,7 @@
                        
                             <template for:each={options} for:item="option">
                                 <li key={option.Id}
-                                    data-label={option.Name}
+                                    data-label={option.fieldToDisplay}
                                     data-value={option.Id} 
                                     role="presentation" 
                                     class="slds-listbox__item" 
@@ -142,7 +142,7 @@
                                         <span class="slds-media__figure slds-listbox__option-icon"></span>
                                         <span class="slds-media__body">
                                             <span class="slds-truncate">
-                                                {option.Name}
+                                                {option.fieldToDisplay}
                                             </span>
                                         </span>
                                     </div>
