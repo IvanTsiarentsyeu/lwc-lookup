@@ -1,7 +1,7 @@
 <template>
     <lightning-card>
         <div>           
-            <p>container v 0.075</p>
+            <p>container v 0.081</p>
             <div class="slds-grid">
                 <div class="slds-col slds-size_1-of-12"></div>
                 <div class="slds-col slds-size_4-of-12">
@@ -21,11 +21,6 @@
                         value={sObject_1.fields}
                         oninput={handleKeyChange_1_fields}
                     ></input>
-                    <p class="slds-form-element__label">main field name (field to display)</p>
-                    <input type="text" class="slds-input" autocomplete="off" 
-                        value={sObject_1.mainField}
-                        oninput={handleKeyChange_1_mainField}
-                    ></input>
                     <p class="slds-form-element__label">SOQL WHERE clause</p>
                     <input type="text" class="slds-input" autocomplete="off" 
                         value={sObject_1.clause}
@@ -35,7 +30,6 @@
                     <c-dropdown-lookup 
                         s-object-name={sObject_1.name} 
                         comma-separated-fields={sObject_1.fields}
-                        display-field-name={sObject_1.mainField}
                         sql-where-clause={sObject_1.clause}
                         label={label_1}
                         placeholder={placeholder_1}               
@@ -60,11 +54,6 @@
                         value={sObject_2.fields}
                         oninput={handleKeyChange_2_fields}
                     ></input>
-                    <p class="slds-form-element__label">main field name (field to display)</p>
-                    <input type="text" class="slds-input" autocomplete="off" 
-                        value={sObject_2.mainField}
-                        oninput={handleKeyChange_2_mainField}
-                    ></input>
                     <p class="slds-form-element__label">SOQL WHERE clause</p>
                     <input type="text" class="slds-input" autocomplete="off" 
                         value={sObject_2.clause}
@@ -74,7 +63,6 @@
                     <c-dropdown-lookup 
                         s-object-name={sObject_2.name} 
                         comma-separated-fields={sObject_2.fields}
-                        display-field-name={sObject_2.mainField}
                         sql-where-clause={sObject_2.clause}
                         label={label_2}
                         placeholder={placeholder_2}               

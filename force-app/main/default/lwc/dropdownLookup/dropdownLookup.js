@@ -9,30 +9,28 @@ export default class DropdownLookup extends LightningElement {
 
     @api sObjectName;
     @api commaSeparatedFields;
-    @api displayFieldName;
     @api sqlWhereClause;
     @api label;
     @api placeholder;
 
-    wired;
     options;
     error;
 
     @track selectedOption;
 
     @track searchKey = '';
+    selectedOptionDisplayField;
     mouseOverDropdown = false;
     dropdownOpen = false;
     highlight = false;
+    showSpinner = false;
 
     @wire(selectRecordsFromAnysObject, { sObjectName: '$sObjectName', 
                                          fields:'$commaSeparatedFields', 
-                                         mainField: '$displayFieldName',
                                          clause:'$sqlWhereClause', 
                                          searchKey: '$searchKey' })
     wiredOptions ({ error, data }) {
         if (data) {
-            
             this.error = undefined;
             this.options = [];
             data.forEach(option => {
@@ -41,24 +39,13 @@ export default class DropdownLookup extends LightningElement {
                 keys.forEach(key => {
                     newOption[key] = option[key];
                 });
-                newOption['fieldToDisplay'] = option[this.displayFieldName];
+                newOption['fieldToDisplay'] = option[keys[0]];
                 this.options.push(newOption);
             });
+            this.showSpinner = false;
 
-
-            // this.wired = data;
-            // this.error = undefined;
-            // this.options = [];
-            // this.wired.forEach(option => {
-            //     let newOption = {};
-            //     newOption['fieldToDisplay'] = option[this.displayFieldName];
-            //     newOption.Name = option.Name;
-            //     newOption.Id = option.Id;
-            //     this.options.push(newOption);
-            // });
         } else if (error) {
             this.error = error;
-            this.wired = undefined;
             this.options = undefined;
             console.error(error);
         }
@@ -66,6 +53,7 @@ export default class DropdownLookup extends LightningElement {
 
     connectedCallback() {
         this.selectedOption={};
+        this.selectedOptionDisplayField='';
     }
 
     renderedCallback() {
@@ -75,11 +63,19 @@ export default class DropdownLookup extends LightningElement {
         }
     }
 
+    clearObject (obj) {
+        const keys = Object.keys(obj);
+        keys.forEach(key => {
+            delete obj[key];
+        });
+    }
+
     handleKeyChange(event) {
         window.clearTimeout(this.delayTimeout);
         const searchKey = event.target.value;
         this.delayTimeout = setTimeout(() => {
             this.searchKey = searchKey;
+            this.showSpinner=true;
         }, APEX_DELAY);
     }
 
@@ -87,12 +83,14 @@ export default class DropdownLookup extends LightningElement {
         const selectedId = event.target.closest('li').dataset.value;
         this.options.forEach(option => {
             if (selectedId === option.Id) {
-                const keys = Object.keys(option)
+                const keys = Object.keys(option);
+                this.clearObject(this.selectedOption);
                 keys.forEach (key => {
                     this.selectedOption[key] = option[key];
                 })
             }
         })
+        this.selectedOptionDisplayField = this.selectedOption['fieldToDisplay'];
         delete this.selectedOption['fieldToDisplay'];
         const newEvent = new CustomEvent('change', {
             detail: this.selectedOption,
@@ -147,16 +145,13 @@ export default class DropdownLookup extends LightningElement {
     }
 
     clearSelectedOption() {
-        if (this.selectedOption.Id) {
-            const keys = Object.keys(this.selectedOption);
-            keys.forEach (key => {
-                this.selectedOption[key] = ''
-            })
+            this.selectedOptionDisplayField='';
+            this.clearObject(this.selectedOption);
             const newEvent = new CustomEvent('change', {
                 detail: this.selectedOption,
             });
-        this.dispatchEvent(newEvent);
-        }
+            this.dispatchEvent(newEvent);
+        // }
     }
 
     get labelClass () {
@@ -180,14 +175,6 @@ export default class DropdownLookup extends LightningElement {
         return iconUrl;
     }
 
-    get selectedOptionDisplayField () {
-        if (this.selectedOption[this.displayFieldName]) {
-            return this.selectedOption[this.displayFieldName];
-        } else {
-            return '';
-        }
-    }
-
     get showDropdown(){
         return this.dropdownOpen;
     }
@@ -198,11 +185,6 @@ export default class DropdownLookup extends LightningElement {
         } else {
             return "slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click";
         }     
-    }
-
-    get showSpinner() {
-        // ПОКА НЕ ПОНИМАЮ, К ЧЕМУ ЕГО ПРИЦЕПИТЬ
-        return true;
     }
 
     get showUndoAndDelete() {

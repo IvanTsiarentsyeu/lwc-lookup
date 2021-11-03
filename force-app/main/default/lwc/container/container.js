@@ -9,14 +9,12 @@ export default class Container extends LightningElement {
     @track sObject_1 = {
         name        : '',
         fields      : '',
-        mainField   : '',
         clause      : '',
     };
 
     @track sObject_2 = {
         name        : '',
         fields      : '',
-        mainField   : '',
         clause      : '',
     };
 
@@ -33,9 +31,17 @@ export default class Container extends LightningElement {
     }
 
     populate (obj, event) {
+        this.clear(obj);
         const keys = Object.keys(event.detail);
         keys.forEach(key => {
             obj[key] = event.detail[key];
+        });
+    }
+
+    clear (obj) {
+        const keys = Object.keys(obj);
+        keys.forEach(key => {
+            delete obj[key];
         });
     }
 
@@ -53,10 +59,6 @@ export default class Container extends LightningElement {
         this.delayInput(event, this.sObject_1, 'fields');
     }
 
-    handleKeyChange_1_mainField(event) {         
-        this.delayInput(event, this.sObject_1, 'mainField');
-    }
-
     handleKeyChange_1_clause(event) {         
         this.delayInput(event, this.sObject_1, 'clause');
     }
@@ -68,10 +70,6 @@ export default class Container extends LightningElement {
 
     handleKeyChange_2_fields(event) {         
         this.delayInput(event, this.sObject_2, 'fields');
-    }
-
-    handleKeyChange_2_mainField(event) {         
-        this.delayInput(event, this.sObject_2, 'mainField');
     }
 
     handleKeyChange_2_clause(event) {         
