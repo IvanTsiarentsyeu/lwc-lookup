@@ -27,6 +27,7 @@ export default class DropdownLookup extends LightningElement {
     highlight = false;
     showSpinner = false;
     incomingOptionIsNotSelectedYet = true;
+    focusOnReadonlyFlag = false;
 
     @wire(selectRecordsFromAnysObject, { sObjectName: '$sObjectName', 
                                          fields:'$commaSeparatedFields', 
@@ -63,9 +64,11 @@ export default class DropdownLookup extends LightningElement {
     }
 
     renderedCallback() {
-        const searchInput = this.template.querySelector('.searchInput');
-        if (searchInput) {
-            searchInput.focus();
+        if (this.dropdownOpen) {
+            this.focusOnSearchInput();
+        } else if (this.focusOnReadonlyFlag) {
+            this.focusOnReadonlyFlag = false;
+            this.focusOnReadonlyInput();
         }
     }
 
@@ -94,6 +97,30 @@ export default class DropdownLookup extends LightningElement {
         });
     }
 
+    clearSelectedOption() {
+        this.selectedOptionDisplayField='';
+        this.clearObject(this.selectedOption);
+        const newEvent = new CustomEvent('change', {
+            detail: this.selectedOption,
+        });
+        this.dispatchEvent(newEvent);
+    // }
+    }
+
+    focusOnSearchInput() {
+        const input = this.template.querySelector('.searchInput');
+        if (input) {
+            input.focus();
+        }
+    }
+
+    focusOnReadonlyInput() {
+        const input = this.template.querySelector('.readonlyInput');
+        if (input) {
+            input.focus();
+        }
+    }
+
     handleKeyChange(event) {
         window.clearTimeout(this.delayTimeout);
         const searchKey = event.target.value;
@@ -101,6 +128,34 @@ export default class DropdownLookup extends LightningElement {
             this.searchKey = searchKey;
             this.showSpinner=true;
         }, APEX_DELAY);
+    }
+
+    handleInputKeyUp(event) {
+        const key = event.code;
+        switch (key) {
+            case 'Escape':          
+                    this.dropdownOpen = false;
+                    this.focusOnReadonlyFlag = true;
+                break;
+            case 'ArrowUp':
+                console.log(key);
+            break;    
+            case 'ArrowDown':
+                console.log(key);
+            break;
+            case 'Enter':
+                console.log(key);
+            break;                      
+        }
+    }
+
+    handleReadonlyKeyUp(event) {
+        const key = event.code
+        if (key === 'Enter') {
+            if (! this.selectedOption.Id) {    
+                this.dropdownOpen = true;
+            }
+        }
     }
 
     handleListItemClick(event) {
@@ -137,10 +192,7 @@ export default class DropdownLookup extends LightningElement {
 
     handleBlur(event) {
         if (this.mouseOverDropdown) {
-            const searchInput = this.template.querySelector('.searchInput');
-            if (searchInput) {
-                searchInput.focus();
-            }
+            this.focusOnSearchInput();
         } else {
             window.clearTimeout(this.delayTimeout);
             this.delayTimeout = setTimeout(() => {
@@ -167,14 +219,9 @@ export default class DropdownLookup extends LightningElement {
         this.clearSelectedOption(); 
     }
 
-    clearSelectedOption() {
-            this.selectedOptionDisplayField='';
-            this.clearObject(this.selectedOption);
-            const newEvent = new CustomEvent('change', {
-                detail: this.selectedOption,
-            });
-            this.dispatchEvent(newEvent);
-        // }
+    get closeIconUrl() {
+        let iconUrl = ICONS + '/utility-sprite/svg/symbols.svg#close';
+        return iconUrl;
     }
 
     get labelClass () {
@@ -191,11 +238,6 @@ export default class DropdownLookup extends LightningElement {
         } else {
             return "mainDiv";
         }
-    }
-
-    get closeIconUrl() {
-        let iconUrl = ICONS + '/utility-sprite/svg/symbols.svg#close';
-        return iconUrl;
     }
 
     get showDropdown(){

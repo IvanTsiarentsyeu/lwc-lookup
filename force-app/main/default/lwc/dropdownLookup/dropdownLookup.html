@@ -1,5 +1,5 @@
 <template>
-    <p>lookup v 0.195</p>
+    <p>lookup v 0.204</p>
 <div class={mainDivClass}>
     <template if:true={options}>
     <div class="slds-form-element">
@@ -35,7 +35,7 @@
                         <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right slds-input-has-icon_group-right" role="none">    
 
                             <input type="text" 
-                                class="slds-input slds-combobox__input" 
+                                class="slds-input slds-combobox__input readonlyInput" 
                                 id={selectedOption.Id} 
                                 aria-autocomplete="list" 
                                 aria-controls="listbox-id" 
@@ -46,6 +46,7 @@
                                 placeholder={placeholder}
                                 value={selectedOptionDisplayField}
                                 onclick={handleReadonlyInputClick}
+                                onkeyup={handleReadonlyKeyUp}
                                 readonly
                             ></input>
 
@@ -91,6 +92,7 @@
                                 placeholder={placeholder}
                                 value={searchKey}
                                 oninput={handleKeyChange}
+                                onkeyup={handleInputKeyUp}
                                 onclick={handleSearchClick}
                                 onblur={handleBlur}
                             ></input>

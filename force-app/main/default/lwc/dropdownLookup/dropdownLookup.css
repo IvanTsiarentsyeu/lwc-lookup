@@ -6,6 +6,10 @@
     cursor:auto;
 }
 
+.readonlyInput{
+    cursor:auto;
+}
+
 .mainDiv{
     padding: 5px;
 }
