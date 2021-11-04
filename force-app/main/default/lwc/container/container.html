@@ -1,7 +1,7 @@
 <template>
     <lightning-card>
         <div>           
-            <p>container v 0.081</p>
+            <p>container v 0.085</p>
             <div class="slds-grid">
                 <div class="slds-col slds-size_1-of-12"></div>
                 <div class="slds-col slds-size_4-of-12">
@@ -31,6 +31,7 @@
                         s-object-name={sObject_1.name} 
                         comma-separated-fields={sObject_1.fields}
                         sql-where-clause={sObject_1.clause}
+                        already-selected-option-id=''
                         label={label_1}
                         placeholder={placeholder_1}               
                         onchange={handleChange_1}
@@ -64,14 +65,31 @@
                         s-object-name={sObject_2.name} 
                         comma-separated-fields={sObject_2.fields}
                         sql-where-clause={sObject_2.clause}
+                        already-selected-option-id=''
                         label={label_2}
                         placeholder={placeholder_2}               
                         onchange={handleChange_2}
+                    ></c-dropdown-lookup>
+                    <br><br> 
+
+                    <template if:true={showSelectedOptions}>
+                        <p>{sObjectToString_3}</p>
+                    </template>
+                    <c-dropdown-lookup 
+                        s-object-name="Account"
+                        comma-separated-fields="Name, Id, Industry"
+                        sql-where-clause=""
+                        already-selected-option-id='0015g00000JiwThAAJ'
+                        label="Account Name"
+                        placeholder="Search Accounts..."               
+                        onchange={handleChange_3}
                     ></c-dropdown-lookup>
                 </div>
                 <div class="slds-col slds-size_1-of-12"></div>
             </div>
         </div>
+
+        0015g00000JiwThAAJ
 
     </lightning-card>
 </template>

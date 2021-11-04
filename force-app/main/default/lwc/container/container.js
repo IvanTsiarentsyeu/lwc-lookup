@@ -5,6 +5,7 @@ export default class Container extends LightningElement {
     
     @track selectedOption_1 ={}
     @track selectedOption_2 ={}
+    @track selectedOption_3 ={}
 
     @track sObject_1 = {
         name        : '',
@@ -13,6 +14,12 @@ export default class Container extends LightningElement {
     };
 
     @track sObject_2 = {
+        name        : '',
+        fields      : '',
+        clause      : '',
+    };
+
+    @track sObject_3 = {
         name        : '',
         fields      : '',
         clause      : '',
@@ -27,6 +34,11 @@ export default class Container extends LightningElement {
 
     handleChange_2(event) {
         this.populate(this.selectedOption_2, event);
+        this.blink();
+    }
+
+    handleChange_3(event) {
+        this.populate(this.selectedOption_3, event);
         this.blink();
     }
 
@@ -99,6 +111,10 @@ export default class Container extends LightningElement {
 
     get sObjectToString_2 () {
         return this.sObject_2.name + ' ' + this.sObjectToString(this.selectedOption_2);
+    }
+
+    get sObjectToString_3 () {
+        return this.sObject_3.name + ' ' + this.sObjectToString(this.selectedOption_3);
     }
 
     get label_1 () { 

@@ -10,6 +10,7 @@ export default class DropdownLookup extends LightningElement {
     @api sObjectName;
     @api commaSeparatedFields;
     @api sqlWhereClause;
+    @api alreadySelectedOptionId;
     @api label;
     @api placeholder;
 
@@ -19,11 +20,13 @@ export default class DropdownLookup extends LightningElement {
     @track selectedOption;
 
     @track searchKey = '';
+
     selectedOptionDisplayField;
     mouseOverDropdown = false;
     dropdownOpen = false;
     highlight = false;
     showSpinner = false;
+    incomingOptionIsNotSelectedYet = true;
 
     @wire(selectRecordsFromAnysObject, { sObjectName: '$sObjectName', 
                                          fields:'$commaSeparatedFields', 
@@ -42,6 +45,9 @@ export default class DropdownLookup extends LightningElement {
                 newOption['fieldToDisplay'] = option[keys[0]];
                 this.options.push(newOption);
             });
+            if (this.incomingOptionIsNotSelectedYet){
+                this.chooseIncomingOption();
+            }
             this.showSpinner = false;
 
         } else if (error) {
@@ -60,6 +66,24 @@ export default class DropdownLookup extends LightningElement {
         const searchInput = this.template.querySelector('.searchInput');
         if (searchInput) {
             searchInput.focus();
+        }
+    }
+
+    chooseIncomingOption() { 
+        if (this.alreadySelectedOptionId) {
+                this.incomingOptionIsNotSelectedYet = false;
+                this.options.forEach(option => {
+                    if (option.Id == this.alreadySelectedOptionId) {
+                        const keys = Object.keys(option);
+                        this.clearObject(this.selectedOption);
+                        keys.forEach (key => {
+                            this.selectedOption[key] = option[key];
+                        });
+                        this.selectedOptionDisplayField = this.selectedOption['fieldToDisplay'];
+                    }
+                });
+        } else {
+            this.incomingOptionIsNotSelectedYet = false;
         }
     }
 
@@ -109,7 +133,6 @@ export default class DropdownLookup extends LightningElement {
     }
 
     handleSearchClick () {
-        console.warn('search pressed');
     }
 
     handleBlur(event) {
