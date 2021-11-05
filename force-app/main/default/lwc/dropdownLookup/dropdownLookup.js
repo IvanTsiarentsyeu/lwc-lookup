@@ -8,11 +8,11 @@ const BLUR_DELAY=100;
 export default class DropdownLookup extends LightningElement {
 
     @api sObjectName;
-    @api commaSeparatedFields;
-    @api sqlWhereClause;
-    @api alreadySelectedOptionId;
-    @api label;
-    @api placeholder;
+    @api commaSeparatedFields = 'Name';
+    @api sqlWhereClause = '';
+    @api alreadySelectedOptionId = '';
+    @api label = 'Name';
+    @api placeholder = 'Search...';
 
     options;
     error;
