@@ -1,0 +1,20 @@
+.dropdown{
+    cursor: auto;
+}
+
+.searchInput{
+    cursor:auto;
+}
+
+.readonlyInput{
+    cursor:auto;
+}
+
+.mainDiv{
+    padding: 5px;
+}
+
+
+.lgc-highlight {
+    background-color: rgb(252, 252, 172);
+}

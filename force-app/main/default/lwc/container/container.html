@@ -1,18 +1,93 @@
 <template>
     <lightning-card>
-        <div>
-            <p>Name = {selectedOption.Name}, Id = {selectedOption.Id}</p>
-            <p>container v 0.004</p>
-            <br>
+        <div>           
+            <p>container v 0.091</p>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-12"></div>
+                <div class="slds-col slds-size_4-of-12">
+
+                    <template if:true={showSelectedOptions}>
+                        <p>{sObjectToString_1}</p>
+                    </template>
+                    <br>
+                    <h1>sObject #1</h1>
+                    <p class="slds-form-element__label">Object name</p>
+                    <input type="text" class="slds-input" autocomplete="off" 
+                        value={sObject_1.name}
+                        oninput={handleKeyChange_1_name}
+                    ></input>
+                    <p class="slds-form-element__label">comma-separated fields</p>
+                    <input type="text" class="slds-input" autocomplete="off" 
+                        value={sObject_1.fields}
+                        oninput={handleKeyChange_1_fields}
+                    ></input>
+                    <p class="slds-form-element__label">SOQL WHERE clause</p>
+                    <input type="text" class="slds-input" autocomplete="off" 
+                        value={sObject_1.clause}
+                        oninput={handleKeyChange_1_clause}
+                    ></input>
+                    <br><br> 
+                    <c-dropdown-lookup 
+                        s-object-name={sObject_1.name} 
+                        comma-separated-fields={sObject_1.fields}
+                        sql-where-clause={sObject_1.clause}
+                        already-selected-option-id=''
+                        label={label_1}
+                        placeholder={placeholder_1}               
+                        onchange={handleChange_1}
+                    ></c-dropdown-lookup>
+                </div>
+
+                <div class="slds-col slds-size_2-of-12"></div>
+                <div class="slds-col slds-size_4-of-12">
+
+                    <template if:true={showSelectedOptions}>
+                        <p>{sObjectToString_2}</p>
+                    </template>
+                    <br>
+                    <h1>sObject #2</h1>
+                    <p class="slds-form-elemen__label">Object name</p>
+                    <input type="text" class="slds-input" autocomplete="off" 
+                        value={sObject_2.name}
+                        oninput={handleKeyChange_2_name}
+                    ></input>
+                    <p class="slds-form-element__label">comma-separated fields</p>
+                    <input type="text" class="slds-input" autocomplete="off" 
+                        value={sObject_2.fields}
+                        oninput={handleKeyChange_2_fields}
+                    ></input>
+                    <p class="slds-form-element__label">SOQL WHERE clause</p>
+                    <input type="text" class="slds-input" autocomplete="off" 
+                        value={sObject_2.clause}
+                        oninput={handleKeyChange_2_clause}
+                    ></input>
+                    <br><br> 
+                    <c-lookup 
+                        s-object-name={sObject_2.name} 
+                        comma-separated-fields={sObject_2.fields}
+                        sql-where-clause={sObject_2.clause}
+                        already-selected-option-id=''
+                        label={label_2}
+                        placeholder={placeholder_2}               
+                        onchange={handleChange_2}
+                    ></c-lookup>
+                    <br><br> 
+
+                    <template if:true={showSelectedOptions}>
+                        <p>{sObjectToString_3}</p>
+                    </template>
+                    <c-dropdown-lookup 
+                        s-object-name="Account"
+                        comma-separated-fields="Name, Id, Industry"
+                        sql-where-clause=""
+                        already-selected-option-id='0015g00000JiwThAAJ'
+                        placeholder="Search Accounts..."               
+                        onchange={handleChange_3}
+                    ></c-dropdown-lookup>
+                </div>
+                <div class="slds-col slds-size_1-of-12"></div>
+            </div>
         </div>
-        <div>
-            <c-dropdown-lookup 
-                s-object-name="Contact" 
-                label="Contact Name"
-                placeholder="Search Contacts..."
-                name-like-using-sql-syntax="%_%"
-                onchange={handleChange}
-            ></c-dropdown-lookup>
-        </div>
+
     </lightning-card>
 </template>
