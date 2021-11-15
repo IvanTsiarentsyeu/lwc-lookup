@@ -1,20 +1,5 @@
 public with sharing class dropdownLookupController {
 
-    private class SObjectDescriptor {
-        String name;
-        String field;
-    }
-
-    @AuraEnabled
-    public static List<SObjectDescriptor> getSObjectsDescription(){
-        try {
-            return new List<SObjectDescriptor>();
-        } catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
-        }
-    }
-
-
     @AuraEnabled (cacheable=true)
     public static List<sObject> selectRecordsFromAnysObject(String sObjectName, String fields, String clause, String searchKey) {
         string query = makeQuery(sObjectName, fields, clause);  

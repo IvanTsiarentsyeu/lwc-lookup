@@ -1,5 +1,5 @@
 <template>
-<p>dropdown v 0.013</p>
+<p>dropdown v 0.029</p>
 <div class={mainDivClass}>
     <template if:true={options}>
     <div class="slds-form-element">
@@ -35,7 +35,7 @@
                         <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right slds-input-has-icon_group-right" role="none">    
 
                             <input type="text" 
-                                class="slds-input slds-combobox__input readonlyInput" 
+                                class={inputReadonlyClass} 
                                 id={selectedOption.Id} 
                                 aria-autocomplete="list" 
                                 aria-controls="listbox-id" 
@@ -80,7 +80,7 @@
                         <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right slds-input-has-icon_group-right" role="none">    
                         
                             <input type="text" 
-                                class="slds-input slds-combobox__input searchInput" 
+                                class={inputSearchClass} 
                                 id="searchbox-id" 
                                 data-name="searchInput"
                                 aria-autocomplete="list" 

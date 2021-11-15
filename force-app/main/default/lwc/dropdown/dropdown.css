@@ -10,10 +10,38 @@
     cursor:auto;
 }
 
-.mainDiv{
+.standalonePadding{
     padding: 5px;
 }
 
+.rightPadding{
+    padding: 5px 5px 5px 0px;
+}
+
+.centeredPadding{
+    padding: 5px 0px 5px 0px;
+}
+
+.leftPadding{
+    padding: 5px 0px 5px 5px;
+}
+
+
+.right{
+    border-radius: 0px 5px 5px 0px;
+}
+
+.centered{
+    border-radius: 0px;
+}
+
+.left{
+    border-radius: 5px 0px 0px 5px;
+}
+
+.standalone{
+    border-radius: 5px;
+}
 
 .lgc-highlight {
     background-color: rgb(252, 252, 172);

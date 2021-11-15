@@ -11,6 +11,7 @@ export default class Lookup extends LightningElement {
     @api alreadySelectedOptionId = '';
     @api label = 'Name';
     @api placeholder = 'Search...';
+    @api inputClass = 'standalone';
 
     options=[];
     error;

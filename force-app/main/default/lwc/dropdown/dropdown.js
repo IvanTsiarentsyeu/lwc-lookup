@@ -4,8 +4,6 @@ import {handleInputKeyUp} from './keyboard';
 const BLUR_DELAY=100;
 const APEX_DELAY=300;
 const FIELD_TO_DISPLAY_NAME = 'fieldToDisplay';
-const FIELD_ID = 'Id';
-const COMPUTED_ID_FLAG = 'ComputedId_'
 
 
 export default class Dropdown extends LightningElement {
@@ -14,11 +12,11 @@ export default class Dropdown extends LightningElement {
     @api alreadySelectedOptionId = '';
     @api label = 'Name';
     @api placeholder = 'Search...';
+    @api inputClass = 'standalone';
 
     @track selectedOption = {};
     @track searchKey = '';
 
-    showSpinner = false;
     selectedOptionDisplayField='';
     mouseOverDropdown = false;
     dropdownOpen = false;
@@ -39,7 +37,6 @@ export default class Dropdown extends LightningElement {
             }
             let newOptions = []
             value.forEach(option => {
-                let computedIdMock = 0;
                 let newOption = {};
                 const keys = Object.keys(option);
                 keys.forEach(key => {
@@ -47,10 +44,6 @@ export default class Dropdown extends LightningElement {
                 })
                 if (keys[0]) {
                     newOption[FIELD_TO_DISPLAY_NAME] = option[keys[0]];
-                    if (!option[FIELD_ID]) {
-                        newOption[FIELD_ID] = COMPUTED_ID_FLAG + computedIdMock;
-                        computedIdMock++;
-                    }
                 }
                 newOptions.push(newOption);
             })
@@ -60,7 +53,7 @@ export default class Dropdown extends LightningElement {
             }
             this.showSpinner = false;
         } else {
-            console.log('no value');
+            console.warn('no value');
         }
     }
 
@@ -161,9 +154,6 @@ export default class Dropdown extends LightningElement {
         })
         this.selectedOptionDisplayField = this.selectedOption[FIELD_TO_DISPLAY_NAME];
         delete this.selectedOption[FIELD_TO_DISPLAY_NAME];
-        if (this.selectedOption[FIELD_ID].includes(COMPUTED_ID_FLAG)) {
-            delete this.selectedOption[FIELD_ID];
-        }
         this.sendChangeSelectedOptionEvent();
         this.highlight = true;
         this.dropdownOpen = false;
@@ -201,13 +191,21 @@ export default class Dropdown extends LightningElement {
     }
 
     handleUndoButton() {
-        this.highlight = false;
         this.clearSelectedOption(); 
+        this.highlight = false;
     }
 
     get closeIconUrl() {
         let iconUrl = ICONS + '/utility-sprite/svg/symbols.svg#close';
         return iconUrl;
+    }
+
+    get inputReadonlyClass() {
+        return "slds-input slds-combobox__input readonlyInput " + this.inputClass;
+    }
+
+    get inputSearchClass() {
+        return "slds-input slds-combobox__input searchInput " + this.inputClass;
     }
 
     get labelClass () {
@@ -220,9 +218,9 @@ export default class Dropdown extends LightningElement {
 
     get mainDivClass() {
         if (this.highlight) {
-            return "mainDiv lgc-highlight";
+            return this.inputClass + "Padding lgc-highlight";
         } else {
-            return "mainDiv";
+            return this.inputClass + "Padding";
         }
     }
 
@@ -266,23 +264,23 @@ export default class Dropdown extends LightningElement {
         const that = this;
         return {
             closeDropdown() {
-                console.log('closeDropdown()');
+                console.log('KB closeDropdown()');
                 that.dropdownOpen = false;
                 that.focusOnReadonlyFlag = true;
             },
 
             openDropdown() {
-                console.log('openDropdown()');
+                console.log('KB openDropdown()');
                 that.dropdownOpen = true;
             },
 
             getIsDropdownOpen() {
-                console.log('getIsDropdownOpen()');
+                console.log('KB getIsDropdownOpen()');
                 return that.dropdownOpen;
             },
 
             getSelectedOptionId() {
-                console.log('getSelectedOptionId()');
+                console.log('KB getSelectedOptionId()');
                 return that.selectedOption.Id;
             },
 
