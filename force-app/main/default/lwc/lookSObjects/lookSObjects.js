@@ -54,19 +54,19 @@ export default class LookSObjects extends LightningElement {
 
     everythingIsOkWith(option) {
         if (option.Name.includes('MISSING LABEL')) return false;
-        if (option.isCustomSetting) return false;
-        if (! option.isCreateable) return false;
-        if (! option.hasRecordTypes) return false;
-        if (! option.isAccessible)  return false;
-        if (! option.isQueryable)  return false;
-        if (! option.isSearchable)  return false;
-        if (option.Id.includes('history')) return false;
-        if (option.Id.includes('feed')) return false;
-        if (option.Id.includes('tag')) return false;
-        if (option.Id.includes('share')) return false;
+        // if (option.isCustomSetting) return false;
+        // if (! option.isCreateable) return false;
+        // if (! option.hasRecordTypes) return false;
+        // if (! option.isAccessible)  return false;
+        // if (! option.isQueryable)  return false;
+        // if (! option.isSearchable)  return false;
+        // if (option.Id.includes('history')) return false;
+        // if (option.Id.includes('feed')) return false;
+        // if (option.Id.includes('tag')) return false;
+        // if (option.Id.includes('share')) return false;
 
         // let fieldsSet = new Set(option.fields);
-        // if (fieldsSet.has('name')) return false;
+        // if (!(fieldsSet.has('name') || fieldsSet.has('subject'))) return false;
 
         return true;
     }

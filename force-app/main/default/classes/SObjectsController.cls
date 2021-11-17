@@ -23,7 +23,7 @@ public with sharing class SObjectsController {
         Map<String, SObjectType> sObjectMap = Schema.getGlobalDescribe();
         Set<String> sObjectsNameSet = sObjectMap.keySet();
 
-        for (string sObjectName : sObjectsNameSet) {
+        for (String sObjectName : sObjectsNameSet) {
             Schema.SObjectType sObj= sObjectMap.get(sObjectName);
             SObjectDTO dto = new SObjectDTO();
 
@@ -35,8 +35,21 @@ public with sharing class SObjectsController {
             dto.isAccessible = sObj.getDescribe().isAccessible();
             dto.isQueryable = sObj.getDescribe().isQueryable();
             dto.isSearchable = sObj.getDescribe().isSearchable();
-            dto.fields = sObj.getDescribe().fields.getMap().keySet();
-        
+
+            dto.fields = new Set<FieldDTO>();
+            Map<String, Schema.SObjectField> fieldMap = sObj.getDescribe().fields.getMap();
+            System.debug(fieldMap);
+            Set<String> fieldKeySet = fieldMap.keySet();
+
+            for (String key : fieldKeySet) {
+                SObjectField fieldObj = fieldMap.get(key);
+                FieldDTO newFieldDTO = new FieldDTO();
+                newFieldDTO.Name = fieldObj.getDescribe().getLabel();
+                newFieldDTO.Id = key;
+                newFieldDTO.type = fieldObj.getDescribe().getType();
+                newFieldDTO.isNameField = fieldObj.getDescribe().isNameField();
+                dto.fields.add(newFieldDTO);
+            }
             result.add(JSON.serialize(dto));
         }
         return result;
@@ -51,13 +64,20 @@ public with sharing class SObjectsController {
         Boolean isAccessible;
         Boolean isQueryable;
         Boolean isSearchable;
-        Set<String> fields;
+        Set<FieldDTO> fields;
+    }
+
+    private class FieldDTO {
+        String Name;
+        String Id;
+        DisplayType type;
+        Boolean isNameField;
     }
     
 
-    private static List<String> makeSObjectsList() {
-        return new List<String>(Schema.getGlobalDescribe().keySet());
-    }
+    // private static List<String> makeSObjectsList() {
+    //     return new List<String>(Schema.getGlobalDescribe().keySet());
+    // }
 
     private static List<String> makeFieldsList(String sObjectName) {
         Schema.DescribeSobjectResult[] results = Schema.describeSObjects(new String[]{sObjectName});
