@@ -10,6 +10,7 @@ const BLUR_DELAY=100;
 const FIELD_TO_DISPLAY_NAME = 'fieldToDisplay';
 
 
+
 export default class DropdownLookup extends LightningElement {
 
     @api sObjectName;
@@ -34,6 +35,7 @@ export default class DropdownLookup extends LightningElement {
     incomingOptionIsNotSelectedYet = true;
     focusOnReadonlyFlag = false;
 
+
     @wire(selectRecordsFromAnysObject, { sObjectName: '$sObjectName', 
                                          fields:'$commaSeparatedFields', 
                                          clause:'$sqlWhereClause', 
@@ -48,6 +50,7 @@ export default class DropdownLookup extends LightningElement {
                 keys.forEach(key => {
                     newOption[key] = option[key];
                 });
+
                 newOption[FIELD_TO_DISPLAY_NAME] = option[keys[0]];
                 this.options.push(newOption);
             });
@@ -145,8 +148,10 @@ export default class DropdownLookup extends LightningElement {
                 })
             }
         })
+      
         this.selectedOptionDisplayField = this.selectedOption[FIELD_TO_DISPLAY_NAME];
         delete this.selectedOption[FIELD_TO_DISPLAY_NAME];
+
         const newEvent = new CustomEvent('change', {
             detail: this.selectedOption,
         });
@@ -278,5 +283,6 @@ export default class DropdownLookup extends LightningElement {
 
         }
     }
+
 }
 
