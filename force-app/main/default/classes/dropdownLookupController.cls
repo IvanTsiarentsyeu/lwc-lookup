@@ -78,6 +78,22 @@ public with sharing class dropdownLookupController {
         return ! validSObjectNames.contains(sObjectName.toLowerCase());
     }
 
+    private static String makeStringFromList(List<String> fields) {
+        String result = '';
+        for (String  s : fields) {
+            result = result + ((result=='')?'':', ') + s;
+        }
+        return result;
+    }
+
+    private static Boolean sObjectNameIsBad(String sObjectName) {
+        if (sObjectName==null) return true;
+        if (sObjectName.length()==0) return true;
+        Map<String, Schema.SObjectType> allSobjects = Schema.getGlobalDescribe();
+        Set<String> validSObjectNames = allSobjects.keySet();
+        return ! validSObjectNames.contains(sObjectName.toLowerCase());
+    }
+
 
 
 }

@@ -1,0 +1,14 @@
+<template>
+    <p>lookSObjects v 0.059</p>
+    <template if:true={options}>
+        <c-dropdown 
+            options={options} 
+            already-selected-option-id=""
+            label={label}
+            placeholder={placeholder} 
+            input-class={inputClass}                 
+            onchange={handleChange}
+            onkeychange={handleKeyChange}
+        ></c-dropdown>
+    </template>
+</template>

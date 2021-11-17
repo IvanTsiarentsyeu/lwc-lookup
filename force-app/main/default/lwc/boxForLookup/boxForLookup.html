@@ -1,0 +1,48 @@
+<template>
+    <p>Lookup box v 0.032</p>
+    <div class="slds-grid">
+        <div class="slds-col slds-size_1-of-4">
+
+            <c-look-s-objects 
+                already-selected-object-name=''
+                label="Select sObject"
+                placeholder="Search sObjects..."     
+                input-class="left"          
+                onchange={handleChangeSObject}
+            ></c-look-s-objects>
+            <template if:true={showSelectedOptions}>
+                <p>{selectedSObjectToString}</p>
+            </template>
+        </div>
+
+        <div class="slds-col slds-size_1-of-4">
+            <c-look-fields 
+                s-object-name={selectedSObjectName}
+                already-selected-field-name=''
+                input-class="centered"
+                label="Select field to display"
+                placeholder="Search fields..."               
+                onchange={handleChangeField}
+            ></c-look-fields>
+            <template if:true={showSelectedOptions}>
+                <p>{selectedFieldToString}</p>
+            </template>
+        </div>
+
+        <div class="slds-col slds-size_2-of-4">
+            <c-lookup 
+                s-object-name={selectedSObjectName} 
+                comma-separated-fields={selectedFieldName}
+                sql-where-clause=''
+                already-selected-option-id=''
+                input-class="right"
+                label={label}
+                placeholder={placeholder}               
+                onchange={handleChangeLookup}
+            ></c-lookup>
+        <template if:true={showSelectedOptions}>
+            <p>{selectedOptionToString}</p>
+        </template>
+        </div>
+    </div>
+</template>

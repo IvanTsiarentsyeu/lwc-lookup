@@ -1,33 +1,23 @@
-
-//        OUTDATED VERSION. THE COMPONENT WAS SPLITTED, PLEASE LOOK dropdown & lookup COMPONENTS
-
-import { LightningElement, api, track, wire } from 'lwc';
-import ICONS from "@salesforce/resourceUrl/icons"
-import selectRecordsFromAnysObject from '@salesforce/apex/dropdownLookupController.selectRecordsFromAnysObject';
+import { LightningElement, api, track } from 'lwc';
+import ICONS from "@salesforce/resourceUrl/icons";
 import {handleInputKeyUp} from './keyboard';
-const APEX_DELAY=300;
 const BLUR_DELAY=100;
+const APEX_DELAY=300;
 const FIELD_TO_DISPLAY_NAME = 'fieldToDisplay';
 
 
+export default class Dropdown extends LightningElement {
 
-export default class DropdownLookup extends LightningElement {
 
-    @api sObjectName;
-    @api commaSeparatedFields = 'Name';
-    @api sqlWhereClause = '';
     @api alreadySelectedOptionId = '';
     @api label = 'Name';
     @api placeholder = 'Search...';
+    @api inputClass = 'standalone';
 
-    options;
-    error;
-
-    @track selectedOption;
-
+    @track selectedOption = {};
     @track searchKey = '';
 
-    selectedOptionDisplayField;
+    selectedOptionDisplayField='';
     mouseOverDropdown = false;
     dropdownOpen = false;
     highlight = false;
@@ -35,40 +25,40 @@ export default class DropdownLookup extends LightningElement {
     incomingOptionIsNotSelectedYet = true;
     focusOnReadonlyFlag = false;
 
-
-    @wire(selectRecordsFromAnysObject, { sObjectName: '$sObjectName', 
-                                         fields:'$commaSeparatedFields', 
-                                         clause:'$sqlWhereClause', 
-                                         searchKey: '$searchKey' })
-    wiredOptions ({ error, data }) {
-        if (data) {
-            this.error = undefined;
-            this.options = [];
-            data.forEach(option => {
+    _options = [];
+    @api
+    get options(){
+        return this._options;
+    }
+    set options(value){
+        if (value) {
+            if (this.selectedOptionDisplayField) {
+                this.clearSelectedOption();
+            }
+            let newOptions = []
+            value.forEach(option => {
                 let newOption = {};
                 const keys = Object.keys(option);
                 keys.forEach(key => {
                     newOption[key] = option[key];
-                });
-
-                newOption[FIELD_TO_DISPLAY_NAME] = option[keys[0]];
-                this.options.push(newOption);
-            });
+                })
+                if (keys[0]) {
+                    newOption[FIELD_TO_DISPLAY_NAME] = option[keys[0]];
+                }
+                newOptions.push(newOption);
+            })
+            this._options = newOptions;
             if (this.incomingOptionIsNotSelectedYet){
                 this.chooseIncomingOption();
             }
             this.showSpinner = false;
-
-        } else if (error) {
-            this.error = error;
-            this.options = undefined;
-            console.error(error);
+        } else {
+            console.warn('no value');
         }
     }
 
     connectedCallback() {
-        this.selectedOption={};
-        this.selectedOptionDisplayField='';
+        this.clearSelectedOption;
     }
 
     renderedCallback() {
@@ -83,7 +73,7 @@ export default class DropdownLookup extends LightningElement {
     chooseIncomingOption() { 
         if (this.alreadySelectedOptionId) {
                 this.incomingOptionIsNotSelectedYet = false;
-                this.options.forEach(option => {
+                this._options.forEach(option => {
                     if (option.Id == this.alreadySelectedOptionId) {
                         const keys = Object.keys(option);
                         this.clearObject(this.selectedOption);
@@ -106,12 +96,18 @@ export default class DropdownLookup extends LightningElement {
     }
 
     clearSelectedOption() {
+        this.searchKey = '';
+        this.sendKeyChangeEvent(this.searchKey);
         this.selectedOptionDisplayField='';
         this.clearObject(this.selectedOption);
-        const newEvent = new CustomEvent('change', {
+        this.sendChangeSelectedOptionEvent();
+    }
+
+    sendChangeSelectedOptionEvent() {
+        let changeSelectedOptionEvent = new CustomEvent('change', {
             detail: this.selectedOption,
         });
-        this.dispatchEvent(newEvent);
+        this.dispatchEvent(changeSelectedOptionEvent);
     }
 
     focusOnSearchInput() {
@@ -133,13 +129,21 @@ export default class DropdownLookup extends LightningElement {
         const searchKey = event.target.value;
         this.delayTimeout = setTimeout(() => {
             this.searchKey = searchKey;
-            this.showSpinner=true;
+            this.sendKeyChangeEvent(this.searchKey);
+            this.showSpinner = true;
         }, APEX_DELAY);
+    }
+
+    sendKeyChangeEvent(key) {
+        let keyChangeEvent = new CustomEvent('keychange', {
+            detail: key,
+        });
+        this.dispatchEvent(keyChangeEvent);
     }
   
     handleListItemClick(event) {
         const selectedId = event.target.closest('li').dataset.value;
-        this.options.forEach(option => {
+        this._options.forEach(option => {
             if (selectedId === option.Id) {
                 const keys = Object.keys(option);
                 this.clearObject(this.selectedOption);
@@ -148,15 +152,9 @@ export default class DropdownLookup extends LightningElement {
                 })
             }
         })
-      
         this.selectedOptionDisplayField = this.selectedOption[FIELD_TO_DISPLAY_NAME];
         delete this.selectedOption[FIELD_TO_DISPLAY_NAME];
-
-        const newEvent = new CustomEvent('change', {
-            detail: this.selectedOption,
-        });
-        this.dispatchEvent(newEvent);
-        this.searchKey = '';
+        this.sendChangeSelectedOptionEvent();
         this.highlight = true;
         this.dropdownOpen = false;
     }
@@ -166,9 +164,6 @@ export default class DropdownLookup extends LightningElement {
         if (! this.selectedOption.Id) {    
             this.dropdownOpen = true;
         }
-    }
-
-    handleSearchClick () {
     }
 
     handleBlur(event) {
@@ -196,13 +191,21 @@ export default class DropdownLookup extends LightningElement {
     }
 
     handleUndoButton() {
-        this.highlight = false;
         this.clearSelectedOption(); 
+        this.highlight = false;
     }
 
     get closeIconUrl() {
         let iconUrl = ICONS + '/utility-sprite/svg/symbols.svg#close';
         return iconUrl;
+    }
+
+    get inputReadonlyClass() {
+        return "slds-input slds-combobox__input readonlyInput " + this.inputClass;
+    }
+
+    get inputSearchClass() {
+        return "slds-input slds-combobox__input searchInput " + this.inputClass;
     }
 
     get labelClass () {
@@ -215,9 +218,9 @@ export default class DropdownLookup extends LightningElement {
 
     get mainDivClass() {
         if (this.highlight) {
-            return "mainDiv lgc-highlight";
+            return this.inputClass + "Padding lgc-highlight";
         } else {
-            return "mainDiv";
+            return this.inputClass + "Padding";
         }
     }
 
@@ -241,8 +244,8 @@ export default class DropdownLookup extends LightningElement {
         }
     }
 
-    // Я СДЕЛАЛ ЭТО ТАК-ЖЕ, КАК В СТАНДАРТНОЙ КОМПОНЕНТЕ cBaseCombobox ДЛЯ ТОГО, ЧТОБЫ РАЗОБРАТЬСЯ, КАК ЭТО РАБОТАЕТ
-    // НО ЗАЧЕМ ЭТО БЫЛО ТАК СДЕЛАНО, ПОМИМО ВОЗМОЖНОСТИ ВЫНЕСТИ ЧАСТЬ КОДА В ДРУГОЙ ФАЙЛ ? (keyboard.js)
+    // далее ОБРАБОТКА РАБОТЫ С ВЫПАДАЮЩИМ СПИСКОМ С КЛАВИАТУРЫ (ПОКА НЕ РАБОТАЕТ)
+    // ПО МОТИВАМ СТАНДАРТНОЙ КОМПОНЕНТЫ cBaseCombobox (часть кода вынесена в keyboard.js)
 
     handleInputKeyUpEvent(event) {
         handleInputKeyUp({
@@ -261,28 +264,26 @@ export default class DropdownLookup extends LightningElement {
         const that = this;
         return {
             closeDropdown() {
-                console.log('closeDropdown()');
+                console.log('KB closeDropdown()');
                 that.dropdownOpen = false;
                 that.focusOnReadonlyFlag = true;
             },
 
             openDropdown() {
-                console.log('openDropdown()');
+                console.log('KB openDropdown()');
                 that.dropdownOpen = true;
             },
 
             getIsDropdownOpen() {
-                console.log('getIsDropdownOpen()');
+                console.log('KB getIsDropdownOpen()');
                 return that.dropdownOpen;
             },
 
             getSelectedOptionId() {
-                console.log('getSelectedOptionId()');
+                console.log('KB getSelectedOptionId()');
                 return that.selectedOption.Id;
             },
 
         }
     }
-
 }
-

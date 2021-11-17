@@ -1,7 +1,11 @@
 <template>
     <lightning-card>
         <div>           
-            <p>container v 0.085</p>
+            <p>container v 0.092</p>
+            <hr>
+            <c-box-for-lookup 
+            ></c-box-for-lookup>
+            <hr>
             <div class="slds-grid">
                 <div class="slds-col slds-size_1-of-12"></div>
                 <div class="slds-col slds-size_4-of-12">
@@ -61,7 +65,7 @@
                         oninput={handleKeyChange_2_clause}
                     ></input>
                     <br><br> 
-                    <c-dropdown-lookup 
+                    <c-lookup 
                         s-object-name={sObject_2.name} 
                         comma-separated-fields={sObject_2.fields}
                         sql-where-clause={sObject_2.clause}
@@ -69,7 +73,7 @@
                         label={label_2}
                         placeholder={placeholder_2}               
                         onchange={handleChange_2}
-                    ></c-dropdown-lookup>
+                    ></c-lookup>
                     <br><br> 
 
                     <template if:true={showSelectedOptions}>
@@ -80,7 +84,6 @@
                         comma-separated-fields="Name, Id, Industry"
                         sql-where-clause=""
                         already-selected-option-id='0015g00000JiwThAAJ'
-                        label="Account Name"
                         placeholder="Search Accounts..."               
                         onchange={handleChange_3}
                     ></c-dropdown-lookup>
@@ -88,8 +91,5 @@
                 <div class="slds-col slds-size_1-of-12"></div>
             </div>
         </div>
-
-        0015g00000JiwThAAJ
-
     </lightning-card>
 </template>
