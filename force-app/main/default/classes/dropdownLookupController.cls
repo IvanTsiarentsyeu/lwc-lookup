@@ -1,4 +1,4 @@
-public with sharing class dropdownLookupController {
+public with sharing class DropdownLookupController {
 
     @AuraEnabled (cacheable=true)
     public static List<sObject> selectRecordsFromAnysObject(String sObjectName, String fields, String clause, String searchKey) {
