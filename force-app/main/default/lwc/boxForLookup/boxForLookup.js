@@ -1,14 +1,12 @@
 import { LightningElement, track } from 'lwc';
 const FIELD_NAME = 'Name';
 const FIELD_ID = 'Id';
+const FIELD_NAME_API_NAME = 'nameFieldApiName';
+const FIELD_NAME_API_LABEL = 'nameFieldLabel';
 
 export default class BoxForLookup extends LightningElement {
 
     @track selectedSObject ={
-        [FIELD_NAME] : '',
-        [FIELD_ID]   : '',
-    }
-    @track selectedField = {
         [FIELD_NAME] : '',
         [FIELD_ID]   : '',
     }
@@ -18,10 +16,6 @@ export default class BoxForLookup extends LightningElement {
         
     handleChangeSObject(event) {
         this.populate(this.selectedSObject, event);
-    }
-
-    handleChangeField(event) {
-        this.populate(this.selectedField, event);
     }
 
     handleChangeLookup(event) {
@@ -67,7 +61,7 @@ export default class BoxForLookup extends LightningElement {
 
     get selectedFieldName() {
         let name = '';
-        if (this.selectedField[FIELD_ID]) name = this.selectedField[FIELD_ID];
+        if (this.selectedSObject[FIELD_NAME_API_NAME]) name = this.selectedSObject[FIELD_NAME_API_NAME];
         return name;
     }
 
@@ -79,16 +73,11 @@ export default class BoxForLookup extends LightningElement {
         return this.sObjectToString(this.selectedSObject);
     }
 
-    get selectedFieldToString() {
-        return this.sObjectToString(this.selectedField);
-    }
-
-
-
     get label () {
-        let label ='.'; 
-        if (this.selectedSObject[FIELD_NAME]) label = label + this.selectedSObject[FIELD_NAME];
-        if (this.selectedField[FIELD_NAME]) label = label + ' ' + this.selectedField[FIELD_NAME];
+        let label ='Name'; 
+        if (this.selectedSObject[FIELD_NAME_API_LABEL]) 
+            label = this.selectedSObject[FIELD_NAME_API_LABEL] ;
+
         return label;
     }
 

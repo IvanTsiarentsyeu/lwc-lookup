@@ -27,7 +27,9 @@ export default class LookSObjects extends LightningElement {
                 this.loadedOptions = [];
                 result.forEach(optionString => {
                     let option = JSON.parse(optionString);
-                    let newOption ={};
+                    let newOption ={
+                        Name :'',
+                    };
                     let keys = Object.keys(option);
                     keys.forEach(key => {
                         newOption[key] = option[key];
@@ -64,9 +66,6 @@ export default class LookSObjects extends LightningElement {
         // if (option.Id.includes('feed')) return false;
         // if (option.Id.includes('tag')) return false;
         // if (option.Id.includes('share')) return false;
-
-        // let fieldsSet = new Set(option.fields);
-        // if (!(fieldsSet.has('name') || fieldsSet.has('subject'))) return false;
 
         return true;
     }

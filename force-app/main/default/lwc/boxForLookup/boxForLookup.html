@@ -1,7 +1,7 @@
 <template>
-    <p>Lookup box v 0.032</p>
+    <p>Lookup box v 0.035</p>
     <div class="slds-grid">
-        <div class="slds-col slds-size_1-of-4">
+        <div class="slds-col slds-size_1-of-3">
 
             <c-look-s-objects 
                 already-selected-object-name=''
@@ -14,22 +14,7 @@
                 <p>{selectedSObjectToString}</p>
             </template>
         </div>
-
-        <div class="slds-col slds-size_1-of-4">
-            <c-look-fields 
-                s-object-name={selectedSObjectName}
-                already-selected-field-name=''
-                input-class="centered"
-                label="Select field to display"
-                placeholder="Search fields..."               
-                onchange={handleChangeField}
-            ></c-look-fields>
-            <template if:true={showSelectedOptions}>
-                <p>{selectedFieldToString}</p>
-            </template>
-        </div>
-
-        <div class="slds-col slds-size_2-of-4">
+        <div class="slds-col slds-size_2-of-3">
             <c-lookup 
                 s-object-name={selectedSObjectName} 
                 comma-separated-fields={selectedFieldName}
