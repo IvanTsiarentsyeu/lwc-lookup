@@ -23,7 +23,7 @@ public with sharing class SObjectsController {
     }
 
     @AuraEnabled
-    public static List<String> getObjectsDescription(Boolean full) {
+    public static List<String> getObjectsDescription() {
         try {
             populateAlreadyExcludedSObjects();
             makeListsToShowAndExclude();
@@ -46,7 +46,7 @@ public with sharing class SObjectsController {
     private static void makeListsToShowAndExclude() {
         Map<String, SObjectType> sObjectMap = Schema.getGlobalDescribe();
         Set<String> sObjectsNameSet = sObjectMap.keySet();
-        
+
         sObjectsNameSet.removeAll(alreadyExcludedSObjects);
 
         for (String sObjectName : sObjectsNameSet) {

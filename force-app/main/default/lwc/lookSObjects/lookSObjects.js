@@ -9,7 +9,6 @@ export default class LookSObjects extends LightningElement {
     @api label = 'Select SObject';
     @api placeholder = 'Search SObjects...';
     @api inputClass = 'standalone';
-    @api inspectorModeOn = false;
     
     loadedOptions;
     error;
@@ -22,7 +21,7 @@ export default class LookSObjects extends LightningElement {
     }
 
     loadSObjectsData () {
-        getObjectsDescription({full : this.inspectorModeOn})
+        getObjectsDescription()
             .then (result => {
                 this.loadedOptions = [];
                 result.forEach(optionString => {

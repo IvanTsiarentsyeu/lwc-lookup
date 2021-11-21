@@ -6,7 +6,6 @@ public with sharing class DropdownLookupController {
         if (query.length()==0) return new List<sObject>();
         if (searchKey==null) searchKey = '';
         String search = '%'+ searchKey +'%';
-        System.debug(query);
         try {
             return Database.query(query);
         } catch (Exception e) {
@@ -29,6 +28,7 @@ public with sharing class DropdownLookupController {
             query = query + ' AND (' + clause +')';
         }
         query = query + ' ORDER BY '+ validatedFieldsList[0];
+        query = query + ' LIMIT 1000';
         return query;
     }
 
@@ -37,7 +37,6 @@ public with sharing class DropdownLookupController {
         Schema.DescribeSobjectResult[] results = Schema.describeSObjects(new String[]{sObjectName});
         Map<String, Schema.SObjectField> fieldMap = results[0].fields.getMap();
         Set<String> fieldSet = fieldMap.keySet();
-        System.debug(fieldSet);
 
         List<String> newFieldsList = new List<String>();
         for(String f : fields){
@@ -77,6 +76,5 @@ public with sharing class DropdownLookupController {
         Set<String> validSObjectNames = allSobjects.keySet();
         return ! validSObjectNames.contains(sObjectName.toLowerCase());
     }
-
 
 }
