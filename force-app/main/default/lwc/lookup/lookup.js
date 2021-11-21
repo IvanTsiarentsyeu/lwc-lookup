@@ -1,3 +1,5 @@
+// DATA-GATHERING COMPONENT TO SELECT RECORDS OF SPECIFIC SOBJECT, USES dropdown TO DISPLAY
+
 import { LightningElement, api, track, wire } from 'lwc';
 import selectRecordsFromAnysObject from '@salesforce/apex/DropdownLookupController.selectRecordsFromAnysObject';
 const FIELD_TO_DISPLAY_NAME = 'fieldToDisplay';

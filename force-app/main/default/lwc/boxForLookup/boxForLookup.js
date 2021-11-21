@@ -1,3 +1,5 @@
+// COMPLEX COMPONENT, USES ONE CHILD TO CHOOSE SOBJECTS AND ANOTHER TO SELECT RECORDS IN IT
+
 import { LightningElement, track } from 'lwc';
 const FIELD_NAME = 'Name';
 const FIELD_ID = 'Id';

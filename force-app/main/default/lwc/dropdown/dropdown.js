@@ -1,3 +1,5 @@
+// DROPDOWN WITH SEARCH, USES EXTERNAL DATA
+
 import { LightningElement, api, track } from 'lwc';
 import ICONS from "@salesforce/resourceUrl/icons";
 import {handleInputKeyUp} from './keyboard';

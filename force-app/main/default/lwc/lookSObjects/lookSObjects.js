@@ -1,3 +1,5 @@
+// DATA-GATHERING COMPONENT FOR SOBJECT SELECTION, USES dropdown TO DISPLAY
+
 import { LightningElement, api, track, wire } from 'lwc';
 import getObjectsDescription from '@salesforce/apex/SObjectsController.getObjectsDescription';
 const FIELD_NAME = 'Name';

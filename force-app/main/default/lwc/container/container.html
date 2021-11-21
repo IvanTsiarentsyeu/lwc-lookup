@@ -1,3 +1,5 @@
+<!-- JUST A CONTAINER TO SHOW OFF LWC COMPONENTS -->
+
 <template>
     <lightning-card>
         <div>           
@@ -76,17 +78,6 @@
                     ></c-lookup>
                     <br><br> 
 
-                    <template if:true={showSelectedOptions}>
-                        <p>{sObjectToString_3}</p>
-                    </template>
-                    <c-dropdown-lookup 
-                        s-object-name="Account"
-                        comma-separated-fields="Name, Id, Industry"
-                        sql-where-clause=""
-                        already-selected-option-id='0015g00000JiwThAAJ'
-                        placeholder="Search Accounts..."               
-                        onchange={handleChange_3}
-                    ></c-dropdown-lookup>
                 </div>
                 <div class="slds-col slds-size_1-of-12"></div>
             </div>
