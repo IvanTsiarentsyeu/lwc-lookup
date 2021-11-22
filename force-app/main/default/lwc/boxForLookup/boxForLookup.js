@@ -15,9 +15,15 @@ export default class BoxForLookup extends LightningElement {
     @track selectedOption ={}
 
     showSelectedOptions = true;
+    disableLookup = false;
         
     handleChangeSObject(event) {
         this.populate(this.selectedSObject, event);
+        if (this.selectedSObject[FIELD_NAME]) {
+            this.disableLookup = false;
+        } else {
+            this.disableLookup = true;
+        }
     }
 
     handleChangeLookup(event) {
@@ -57,13 +63,17 @@ export default class BoxForLookup extends LightningElement {
 
     get selectedSObjectName() {
         let name = '';
-        if (this.selectedSObject[FIELD_ID]) name = this.selectedSObject[FIELD_ID];
+        if (this.selectedSObject[FIELD_ID]) {
+            name = this.selectedSObject[FIELD_ID];
+        }
         return name;
     }
 
     get selectedFieldName() {
         let name = '';
-        if (this.selectedSObject[FIELD_NAME_API_NAME]) name = this.selectedSObject[FIELD_NAME_API_NAME];
+        if (this.selectedSObject[FIELD_NAME_API_NAME]) {
+            name = this.selectedSObject[FIELD_NAME_API_NAME];
+        }
         return name;
     }
 
@@ -77,9 +87,9 @@ export default class BoxForLookup extends LightningElement {
 
     get label () {
         let label ='Name'; 
-        if (this.selectedSObject[FIELD_NAME_API_LABEL]) 
+        if (this.selectedSObject[FIELD_NAME_API_LABEL]) {
             label = this.selectedSObject[FIELD_NAME_API_LABEL] ;
-
+        }
         return label;
     }
 

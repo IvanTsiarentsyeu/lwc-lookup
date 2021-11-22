@@ -1,7 +1,6 @@
 <!-- DATA-GATHERING COMPONENT TO SELECT RECORDS OF SPECIFIC SOBJECT, USES dropdown TO DISPLAY -->
 
 <template>
-    <p>lookup v 0.009</p>
     <c-dropdown 
         options={options} 
         already-selected-option-id={alreadySelectedOptionId}
@@ -10,5 +9,6 @@
         placeholder={placeholder}            
         onchange={handleChange}
         onkeychange={handleKeyChange}
+        disabled={disabled}
     ></c-dropdown>
 </template>

@@ -27,7 +27,9 @@ export default class Dropdown extends LightningElement {
     incomingOptionIsNotSelectedYet = true;
     focusOnReadonlyFlag = false;
 
+    _disabled = false;
     _options = [];
+
     @api
     get options(){
         return this._options;
@@ -59,7 +61,25 @@ export default class Dropdown extends LightningElement {
         }
     }
 
+    @api
+    get disabled() {
+        return this._disabled;
+    }
+    set disabled(value) {
+        if (value == true) {
+            this.searchKey = '';
+            this.dropdownOpen = false;
+            this.highlight = false;
+            this._disabled = true;
+
+        } else {
+            this._disabled = false;
+        }
+    }
+
+
     connectedCallback() {
+        this.showSpinner = true;
         this.clearSelectedOption;
     }
 

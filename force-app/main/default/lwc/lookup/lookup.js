@@ -7,18 +7,35 @@ const FIELD_TO_DISPLAY_NAME = 'fieldToDisplay';
 
 export default class Lookup extends LightningElement {
 
-    @api sObjectName;
+    _sObjectName;
     @api commaSeparatedFields = 'Name';
     @api sqlWhereClause = '';
     @api alreadySelectedOptionId = '';
     @api label = 'Name';
     @api placeholder = 'Search...';
     @api inputClass = 'standalone';
+    
+    disabled = false;
 
     options=[];
     error;
 
     @track searchKey = '';
+
+    @api 
+    get sObjectName() {
+        return this._sObjectName;
+    }
+    set sObjectName(value) {
+        this._sObjectName = value;
+        if (this._sObjectName) {
+            this.disabled = false;
+        } else {
+            this.disabled = true;
+        }
+    }
+
+
 
     @wire(selectRecordsFromAnysObject, { sObjectName: '$sObjectName', 
                                          fields:'$commaSeparatedFields', 
@@ -37,6 +54,11 @@ export default class Lookup extends LightningElement {
                 newOptions.push(newOption);
             });
             this.options = newOptions;
+            // if (this.sObjectName) {
+            //     this.disabled = false;
+            // } else {
+            //     this.disabled = true;
+            // }
 
         } else if (error) {
             this.error = error;
