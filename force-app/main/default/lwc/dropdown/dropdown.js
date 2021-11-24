@@ -281,7 +281,7 @@ export default class Dropdown extends LightningElement {
         }
     }
 
-    // ОБРАБОТКА РАБОТЫ С ВЫПАДАЮЩИМ СПИСКОМ С КЛАВИАТУРЫ (ПОКА НЕ РАБОТАЕТ)
+    // ОБРАБОТКА РАБОТЫ С ВЫПАДАЮЩИМ СПИСКОМ С КЛАВИАТУРЫ 
     // ПО МОТИВАМ СТАНДАРТНОЙ КОМПОНЕНТЫ cBaseCombobox (часть кода вынесена в keyboard.js)
 
     handleInputKeyUpEvent(event) {
@@ -352,9 +352,6 @@ export default class Dropdown extends LightningElement {
             }
             element.setAttribute('class', classString);
         } 
-        // else {
-        //     console.warn('setOptionHighlight - Element not found');
-        // }
     }
 
     get listBoxElement () {
@@ -368,28 +365,13 @@ export default class Dropdown extends LightningElement {
         if (!element) return;
         const listBoxRect = listBox.getBoundingClientRect();
         const elementRect = element.getBoundingClientRect();
-        console.log('------------------');
-        console.log('element.offsetTop = ' + element.offsetTop);
-        console.log('listBoxRect.top = ' + listBoxRect.top);
-        console.log('listBoxRect.bottom = ' + listBoxRect.bottom);
-        console.log('listBoxRect.height = ' + listBoxRect.height);
-        console.log('elementRect.top = ' + elementRect.top);
-        console.log('elementRect.bottom = ' + elementRect.bottom);
-        console.log('elementRect.height = ' + elementRect.height);
-
         if (elementRect.top < listBoxRect.top) {
-            console.log('$$$ от счас $$$')
-            console.log('elementRect.top = ' + elementRect.top);
-            console.log('listBoxRect.top = ' + listBoxRect.top);
-
+            listBox.scrollTop = element.offsetTop ;
         }
-
         if (elementRect.bottom > listBoxRect.bottom) {
-            listBox.scrollTop = listBox.scrollTop - (elementRect.bottom - listBoxRect.bottom);
+            listBox.scrollTop = listBox.scrollTop + (elementRect.bottom - listBoxRect.bottom);
         }
         
     }
 
 }
-
-
