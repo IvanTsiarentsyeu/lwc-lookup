@@ -1,38 +1,56 @@
 function preventAndStop(event) {
     event.preventDefault();
-    event.stopPropagation();
+    event.stopImmediatePropagation();
 }
 
-function handleEnterKey({event, currentIndex, dropdownInterface}){
-    console.log(dropdownInterface());
-    console.log(dropdownInterface);
-    if (dropdownInterface.getIsDropdownOpen()) {
-        console.log('select item');
-    } else {
-        console.log('else')
-        if (dropdownInterface.getSelectedOptionId()) {
-            console.log('openDropdown');            
-            dropdownInterface.openDropdown();
+function handleEnterKey({event, currentIndex, length, dropdownInterface}) {
+    if (dropdownInterface.isDropdownOpen()) {
+        if (currentIndex === -1) {
+            dropdownInterface.moveHilightToIndex(0);
         } else {
-            console.log('second else happened');
+            dropdownInterface.selectOptionByIndex(currentIndex);
         }
+    } else {    
+            dropdownInterface.openDropdown();
     }
 }
 
-function handleEscKey({event, currentIndex, dropdownInterface}){
-    console.log('Esc');
+function handleEscKey({event, currentIndex, length, dropdownInterface}) {
+    preventAndStop(event);
     dropdownInterface.closeDropdown();
 }
 
-function handleUpKey({event, currentIndex, dropdownInterface}){
+function handleUpKey({event, currentIndex, length, dropdownInterface}) {
     preventAndStop(event);
-    console.log('Up');
+    requestAnimationFrame(() => {
+    if (currentIndex === -1 || currentIndex === 0) {
+        dropdownInterface.moveHilightToIndex(0);
+    } else {
+        dropdownInterface.moveHilightToIndex(currentIndex - 1);
+    }
+    })
 }
 
-function handleDownKey({event, currentIndex, dropdownInterface}){
+function handleDownKey({event, currentIndex, length, dropdownInterface}) {
     preventAndStop(event);
-    console.log('Down');
+    requestAnimationFrame(() => {
+    if (currentIndex === -1 || currentIndex === length - 1) {
+        dropdownInterface.moveHilightToIndex(length - 1);
+    } else {
+        dropdownInterface.moveHilightToIndex(currentIndex + 1);
+    }
+})
 }
+
+// function handlePageUp({event, currentIndex, length, dropdownInterface}) {
+//     preventAndStop(event);
+//     console.log('-PageUp-');
+// }
+
+// function handlePageDown({event, currentIndex, length, dropdownInterface}) {
+//     preventAndStop(event);
+//     console.log('-PageDown-');
+// }
 
 const eventToHandlerMap = {
     Enter       : handleEnterKey,
@@ -42,11 +60,12 @@ const eventToHandlerMap = {
     ArrowUp     : handleUpKey,
     Down        : handleDownKey,
     ArrowDown   : handleDownKey,
+    // PageUp      : handlePageUp,
+    // PageDown    : handlePageDown,
+};
 
-}
-
-export function handleInputKeyUp({event, currentIndex, dropdownInterface}) {
-    const parameters = {event, currentIndex, dropdownInterface};
+export function handleInputKeyUp({event, currentIndex, length, dropdownInterface}) {
+    const parameters = {event, currentIndex, length, dropdownInterface};
     if (eventToHandlerMap[event.key]){
         eventToHandlerMap[event.key](parameters);
     }

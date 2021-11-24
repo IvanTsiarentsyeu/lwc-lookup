@@ -2,6 +2,10 @@
     cursor: auto;
 }
 
+.highlitedOption{
+    background-color: rgb(250, 242, 242);    
+}
+
 .searchInput{
     cursor:auto;
 }

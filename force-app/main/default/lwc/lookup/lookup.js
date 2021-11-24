@@ -54,12 +54,6 @@ export default class Lookup extends LightningElement {
                 newOptions.push(newOption);
             });
             this.options = newOptions;
-            // if (this.sObjectName) {
-            //     this.disabled = false;
-            // } else {
-            //     this.disabled = true;
-            // }
-
         } else if (error) {
             this.error = error;
             this.options = undefined;

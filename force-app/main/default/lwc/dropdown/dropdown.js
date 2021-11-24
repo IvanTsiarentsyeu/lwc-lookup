@@ -7,9 +7,7 @@ const BLUR_DELAY=100;
 const APEX_DELAY=300;
 const FIELD_TO_DISPLAY_NAME = 'fieldToDisplay';
 
-
 export default class Dropdown extends LightningElement {
-
 
     @api alreadySelectedOptionId = '';
     @api label = 'Name';
@@ -19,13 +17,18 @@ export default class Dropdown extends LightningElement {
     @track selectedOption = {};
     @track searchKey = '';
 
+
     selectedOptionDisplayField='';
     mouseOverDropdown = false;
     dropdownOpen = false;
-    highlight = false;
+    _highlight = false;
     showSpinner = false;
     incomingOptionIsNotSelectedYet = true;
     focusOnReadonlyFlag = false;
+
+    _keyboardInterface;
+    _listboxElementCache;
+    keyboardIndex = -1;
 
     _disabled = false;
     _options = [];
@@ -77,10 +80,19 @@ export default class Dropdown extends LightningElement {
         }
     }
 
+    @api
+    get highlight() {
+        return this._highlight;
+    }
+    set highlight(value) {
+        this._highlight = value;
+    }
+
 
     connectedCallback() {
         this.showSpinner = true;
         this.clearSelectedOption;
+        this._keyboardInterface = this.dropdownKeyboardInterface();
     }
 
     renderedCallback() {
@@ -96,7 +108,7 @@ export default class Dropdown extends LightningElement {
         if (this.alreadySelectedOptionId) {
                 this.incomingOptionIsNotSelectedYet = false;
                 this._options.forEach(option => {
-                    if (option.Id == this.alreadySelectedOptionId) {
+                    if (option.Id === this.alreadySelectedOptionId) {
                         const keys = Object.keys(option);
                         this.clearObject(this.selectedOption);
                         keys.forEach (key => {
@@ -165,6 +177,10 @@ export default class Dropdown extends LightningElement {
   
     handleListItemClick(event) {
         const selectedId = event.target.closest('li').dataset.value;
+        this.selectOptionById(selectedId);
+    }
+
+    selectOptionById (selectedId) {
         this._options.forEach(option => {
             if (selectedId === option.Id) {
                 const keys = Object.keys(option);
@@ -180,7 +196,6 @@ export default class Dropdown extends LightningElement {
         this.highlight = true;
         this.dropdownOpen = false;
     }
-
 
     handleReadonlyInputClick(event) {
         if (! this.selectedOption.Id) {    
@@ -266,46 +281,115 @@ export default class Dropdown extends LightningElement {
         }
     }
 
-    // далее ОБРАБОТКА РАБОТЫ С ВЫПАДАЮЩИМ СПИСКОМ С КЛАВИАТУРЫ (ПОКА НЕ РАБОТАЕТ)
+    // ОБРАБОТКА РАБОТЫ С ВЫПАДАЮЩИМ СПИСКОМ С КЛАВИАТУРЫ (ПОКА НЕ РАБОТАЕТ)
     // ПО МОТИВАМ СТАНДАРТНОЙ КОМПОНЕНТЫ cBaseCombobox (часть кода вынесена в keyboard.js)
 
     handleInputKeyUpEvent(event) {
         handleInputKeyUp({
             event               : event,
-            currentIndex        : this.getHilightedIndex(),
-            dropdownInterface   : this.dropdownKeyboardInterface
+            currentIndex        : this.keyboardIndex,
+            length              : this._options.length,
+            dropdownInterface   : this._keyboardInterface,
         });
-    }
-
-    getHilightedIndex() {
-        // ЗАГЛУШКА
-        return 0;
     }
 
     dropdownKeyboardInterface() {
         const that = this;
+
         return {
+
             closeDropdown() {
-                console.log('KB closeDropdown()');
-                that.dropdownOpen = false;
                 that.focusOnReadonlyFlag = true;
+                that.dropdownOpen = false;
             },
 
             openDropdown() {
-                console.log('KB openDropdown()');
-                that.dropdownOpen = true;
+                if (! that.selectedOption.Id) {    
+                    that.dropdownOpen = true;
+                }
             },
 
-            getIsDropdownOpen() {
-                console.log('KB getIsDropdownOpen()');
+            isDropdownOpen() {
                 return that.dropdownOpen;
             },
 
-            getSelectedOptionId() {
-                console.log('KB getSelectedOptionId()');
-                return that.selectedOption.Id;
+            moveHilightToIndex(newIndex) {
+                let oldElement = that.getElementById(that.getIdByIndex(that.keyboardIndex));
+                that.switchOptionHighlight(oldElement, false);
+
+                that.keyboardIndex = newIndex;
+                let newElement = that.getElementById(that.getIdByIndex(that.keyboardIndex));
+                that.switchOptionHighlight(newElement, true);
+                that.scrollIntoView(newElement, that.listBoxElement);                
+            }, 
+
+            selectOptionByIndex(index) {
+                let selectedId = that.getIdByIndex(index);
+                that.selectOptionById(selectedId);
             },
 
+        };
+    }
+
+    getElementById(Id) {
+        Id = '' + Id;
+        return this.template.querySelector(`[data-value="${Id}"]`);
+    }
+
+    getIdByIndex(index){
+        if (index >= 0 && index < this._options.length) {
+            return this._options[index].Id;
+        } else {
+            return '';
         }
     }
+
+    switchOptionHighlight(element, switchOn) {
+        if (element) {
+            let classString = 'slds-listbox__item';
+            if (switchOn) {
+                classString = classString + ' highlitedOption';
+            }
+            element.setAttribute('class', classString);
+        } 
+        // else {
+        //     console.warn('setOptionHighlight - Element not found');
+        // }
+    }
+
+    get listBoxElement () {
+        if (!this._listBoxElementCache) {
+            this._listboxElementCache = this.template.querySelector('[role="listbox"]');
+        }
+        return this._listboxElementCache;
+    }
+
+    scrollIntoView(element, listBox) {
+        if (!element) return;
+        const listBoxRect = listBox.getBoundingClientRect();
+        const elementRect = element.getBoundingClientRect();
+        console.log('------------------');
+        console.log('element.offsetTop = ' + element.offsetTop);
+        console.log('listBoxRect.top = ' + listBoxRect.top);
+        console.log('listBoxRect.bottom = ' + listBoxRect.bottom);
+        console.log('listBoxRect.height = ' + listBoxRect.height);
+        console.log('elementRect.top = ' + elementRect.top);
+        console.log('elementRect.bottom = ' + elementRect.bottom);
+        console.log('elementRect.height = ' + elementRect.height);
+
+        if (elementRect.top < listBoxRect.top) {
+            console.log('$$$ от счас $$$')
+            console.log('elementRect.top = ' + elementRect.top);
+            console.log('listBoxRect.top = ' + listBoxRect.top);
+
+        }
+
+        if (elementRect.bottom > listBoxRect.bottom) {
+            listBox.scrollTop = listBox.scrollTop - (elementRect.bottom - listBoxRect.bottom);
+        }
+        
+    }
+
 }
+
+
