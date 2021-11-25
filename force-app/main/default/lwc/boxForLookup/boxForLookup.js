@@ -58,7 +58,9 @@ export default class BoxForLookup extends LightningElement {
         const keys = Object.keys(obj);
         let result = '';
         keys.forEach(key => {
-            result = result + ' ' + key + '=' + obj[key] + ', '
+            if (obj[key]) {
+                result = result + ' ' + key + '=' + obj[key] + ', ';
+            }
         });
         return result;
     }

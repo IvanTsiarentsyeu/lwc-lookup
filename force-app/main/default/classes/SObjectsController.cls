@@ -91,28 +91,6 @@ public with sharing class SObjectsController {
         dto.isQueryable = sObj.getDescribe().isQueryable();
         return dto;
     }
-
-    // private static void makeListsToShowAndExclude() {
-    //     Map<String, SObjectType> sObjectMap = Schema.getGlobalDescribe();
-    //     Set<String> sObjectsNameSet = sObjectMap.keySet();
-
-    //     sObjectsNameSet.removeAll(alreadyExcludedSObjects);
-
-    //     for (String sObjectName : sObjectsNameSet) {
-    //         Schema.SObjectType sObj= sObjectMap.get(sObjectName);
-    //         SObjectDTO dto = new SObjectDTO();
-    //         dto.Id = sObjectName;
-    //         dto.Name = sObj.getDescribe().getLabel();
-    //         FieldDTO nameFieldInfo = getNameFieldApiName(sObj);
-    //         if (nameFieldInfo.nameFieldApiName.length() > 0 && sObj.getDescribe().isQueryable()) {
-    //             dto.nameFieldApiName = nameFieldInfo.nameFieldApiName;
-    //             dto.nameFieldLabel = nameFieldInfo.nameFieldLabel;
-    //             sObjectsToShow.add(JSON.serialize(dto));
-    //         } else {
-    //             addSobjectToExcludedList(sObjectName);
-    //         }
-    //     }
-    // }   
     
     private static void addSobjectToExcludedList(String sObjectName) {
         Excluded_sObject__c newElement = new Excluded_sObject__c();
