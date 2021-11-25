@@ -3,54 +3,20 @@
 <template>
     <lightning-card>
         <div>           
-            <p>container v 0.092</p>
+            <p>container v 0.109</p>
             <hr>
+
             <c-box-for-lookup 
             ></c-box-for-lookup>
+
+            <c-box-for-lookup 
+                s-objects-to-display="case, account, opportunity, leaD, Task, erunda, excluded_sobject__c"
+            ></c-box-for-lookup>
+
             <hr>
+
             <div class="slds-grid">
-                <div class="slds-col slds-size_1-of-12"></div>
-                <div class="slds-col slds-size_4-of-12">
-
-                    <template if:true={showSelectedOptions}>
-                        <p>{sObjectToString_1}</p>
-                    </template>
-                    <br>
-                    <h1>sObject #1</h1>
-                    <p class="slds-form-element__label">Object name</p>
-                    <input type="text" class="slds-input" autocomplete="off" 
-                        value={sObject_1.name}
-                        oninput={handleKeyChange_1_name}
-                    ></input>
-                    <p class="slds-form-element__label">comma-separated fields</p>
-                    <input type="text" class="slds-input" autocomplete="off" 
-                        value={sObject_1.fields}
-                        oninput={handleKeyChange_1_fields}
-                    ></input>
-                    <p class="slds-form-element__label">SOQL WHERE clause</p>
-                    <input type="text" class="slds-input" autocomplete="off" 
-                        value={sObject_1.clause}
-                        oninput={handleKeyChange_1_clause}
-                    ></input>
-                    <br><br> 
-                    <c-dropdown-lookup 
-                        s-object-name={sObject_1.name} 
-                        comma-separated-fields={sObject_1.fields}
-                        sql-where-clause={sObject_1.clause}
-                        already-selected-option-id=''
-                        label={label_1}
-                        placeholder={placeholder_1}               
-                        onchange={handleChange_1}
-                    ></c-dropdown-lookup>
-                </div>
-                <div class="slds-col slds-size_2-of-12"></div>
-                <div class="slds-col slds-size_4-of-12">
-
-                    <template if:true={showSelectedOptions}>
-                        <p>{sObjectToString_2}</p>
-                    </template>
-                    <br>
-                    <h1>sObject #2</h1>
+                <div class="slds-col slds-size_1-of-2">
                     <p class="slds-form-elemen__label">Object name</p>
                     <input type="text" class="slds-input" autocomplete="off" 
                         value={sObject_2.name}
@@ -66,7 +32,7 @@
                         value={sObject_2.clause}
                         oninput={handleKeyChange_2_clause}
                     ></input>
-                    <br><br> 
+                    <br>
                     <c-lookup 
                         s-object-name={sObject_2.name} 
                         comma-separated-fields={sObject_2.fields}
@@ -76,10 +42,13 @@
                         placeholder={placeholder_2}               
                         onchange={handleChange_2}
                     ></c-lookup>
-                    <br><br> 
-
+                    <template if:true={showSelectedOptions}>
+                        <p>{sObjectToString_2}</p>
+                    </template>
+                    <br>
                 </div>
-                <div class="slds-col slds-size_1-of-12"></div>
+
+                <div class="slds-col slds-size_1-of-2"></div>
             </div>
         </div>
     </lightning-card>

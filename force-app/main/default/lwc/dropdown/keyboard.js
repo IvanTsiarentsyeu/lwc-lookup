@@ -38,7 +38,7 @@ function handleDownKey({event, currentIndex, length, dropdownInterface}) {
     preventAndStop(event);
     requestAnimationFrame(() => {
     if (currentIndex === -1 || currentIndex === length - 1) {
-        dropdownInterface.moveHilightToIndex(length - 1);
+        dropdownInterface.moveHilightToIndex(0);
     } else {
         dropdownInterface.moveHilightToIndex(currentIndex + 1);
     }

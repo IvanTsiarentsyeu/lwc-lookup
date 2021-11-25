@@ -4,7 +4,7 @@ public with sharing class TestSObjectsController {
     @isTest
     public static void testGetObjectsDescription() {
         Test.startTest();
-        List<String> sObjectStringList =  SObjectsController.getObjectsDescription();
+        List<String> sObjectStringList =  SObjectsController.getObjectsDescription(new List<String>());
         Test.stopTest();
 
         System.assertNotEquals(0, sObjectStringList.size(), 'sObjects List is Empty');

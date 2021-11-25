@@ -1,12 +1,14 @@
 // COMPLEX COMPONENT, USES ONE CHILD TO CHOOSE SOBJECTS AND ANOTHER TO SELECT RECORDS IN IT
 
-import { LightningElement, track } from 'lwc';
+import { LightningElement, track, api } from 'lwc';
 const FIELD_NAME = 'Name';
 const FIELD_ID = 'Id';
 const FIELD_NAME_API_NAME = 'nameFieldApiName';
 const FIELD_NAME_API_LABEL = 'nameFieldLabel';
 
 export default class BoxForLookup extends LightningElement {
+
+    @api sObjectsToDisplay;
 
     @track selectedSObject ={
         [FIELD_NAME] : '',

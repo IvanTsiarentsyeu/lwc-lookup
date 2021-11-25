@@ -4,7 +4,7 @@ public with sharing class TestDropdownLookupController {
     static final Integer ACCOUNTS_COUNT = 100;
     static final String  ACCOUNT_NAME_PREFIX = 'TEST_';
     static final String  ACCOUNT_NUMBER = 'Some Number';
-    static List<String> sObjectStringList =  SObjectsController.getObjectsDescription();
+    static List<String> sObjectStringList =  SObjectsController.getObjectsDescription(new List<String>());
 
 
     @testSetup

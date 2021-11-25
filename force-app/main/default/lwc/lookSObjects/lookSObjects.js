@@ -11,19 +11,23 @@ export default class LookSObjects extends LightningElement {
     @api label = 'Select SObject';
     @api placeholder = 'Search SObjects...';
     @api inputClass = 'standalone';
+    @api sObjectsToDisplay;
     
     loadedOptions;
     error;
     options=[];
+    sObjectsToDisplay = [];
+
 
     searchKey = '';
 
     connectedCallback () {
-        this.loadSObjectsData();
+        const sObjectsList = this.getSObjectsList();
+        this.loadSObjectsData(sObjectsList);
     }
 
-    loadSObjectsData () {
-        getObjectsDescription()
+    loadSObjectsData (sObjectsList) {
+        getObjectsDescription({incomingSObjectsList : sObjectsList})
             .then (result => {
                 this.loadedOptions = [];
                 result.forEach(optionString => {
@@ -55,19 +59,21 @@ export default class LookSObjects extends LightningElement {
 
     }
 
+
+    getSObjectsList() {
+        if (this.sObjectsToDisplay === undefined) {
+            return [];
+        }
+        if (typeof this.sObjectsToDisplay === 'string') {
+            return this.sObjectsToDisplay.split(',').map((element) =>{ 
+                return element.trim().toLowerCase();
+            })
+        }
+        return [];
+    }
+
     everythingIsOkWith(option) {
         if (option.Name.includes('MISSING LABEL')) return false;
-        // if (option.isCustomSetting) return false;
-        // if (! option.isCreateable) return false;
-        // if (! option.hasRecordTypes) return false;
-        // if (! option.isAccessible)  return false;
-        // if (! option.isQueryable)  return false;
-        // if (! option.isSearchable)  return false;
-        // if (option.Id.includes('history')) return false;
-        // if (option.Id.includes('feed')) return false;
-        // if (option.Id.includes('tag')) return false;
-        // if (option.Id.includes('share')) return false;
-
         return true;
     }
 
