@@ -1,6 +1,6 @@
 <!-- DROPDOWN WITH SEARCH, USES EXTERNAL DATA -->
 <template>
-<p>dropdown v 0.119</p>
+<p>dropdown v 0.142</p>
 <div class={mainDivClass}>
     <template if:true={options}>
     <div class="slds-form-element">
@@ -47,7 +47,7 @@
                                 placeholder={placeholder}
                                 value={selectedOptionDisplayField}
                                 onclick={handleReadonlyInputClick}
-                                onkeyup={handleInputKeyUpEvent}
+                                onkeydown={handleInputKeyUpEvent}
                                 disabled={disabled}
                                 readonly
                             ></input>
@@ -94,7 +94,7 @@
                                 placeholder={placeholder}
                                 value={searchKey}
                                 oninput={handleKeyChange}
-                                onkeyup={handleInputKeyUpEvent}
+                                onkeydown={handleInputKeyUpEvent}
                                 onblur={handleBlur}
                             ></input>
 
@@ -122,7 +122,7 @@
                     </template>
 
                     <div id="listbox-id" 
-                        class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid dropdown" 
+                        class={dropdownClass} 
                         role="listbox"
                         onmouseover={handleMouseOverDropdown}
                         onmouseout={handleMouseOutDropdown}

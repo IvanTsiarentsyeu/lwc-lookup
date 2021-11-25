@@ -13,6 +13,7 @@ export default class Dropdown extends LightningElement {
     @api label = 'Name';
     @api placeholder = 'Search...';
     @api inputClass = 'standalone';
+    
 
     @track selectedOption = {};
     @track searchKey = '';
@@ -26,9 +27,12 @@ export default class Dropdown extends LightningElement {
     incomingOptionIsNotSelectedYet = true;
     focusOnReadonlyFlag = false;
 
+    _dropdownLength = 5;
+
     _keyboardInterface;
     _listboxElementCache;
-    keyboardIndex = -1;
+    _keyboardIndex = -1;
+    _visibleOptionsCount;
 
     _disabled = false;
     _options = [];
@@ -59,6 +63,7 @@ export default class Dropdown extends LightningElement {
                 this.chooseIncomingOption();
             }
             this.showSpinner = false;
+            this.clearKeyboardIndexAndSelection()
         } else {
             console.warn('no value');
         }
@@ -77,6 +82,20 @@ export default class Dropdown extends LightningElement {
 
         } else {
             this._disabled = false;
+        }
+    }
+
+    @api 
+    get dropdownLength() {
+        return this._dropdownLength;
+    }
+    set dropdownLength(value) {
+        if (value <= 6) {
+            this._dropdownLength = 5;
+        } else if (value <= 9) {
+            this._dropdownLength = 7;
+        } else {
+            this._dropdownLength = 10;
         }
     }
 
@@ -245,6 +264,10 @@ export default class Dropdown extends LightningElement {
         return "slds-input slds-combobox__input searchInput " + this.inputClass;
     }
 
+    get dropdownClass() {
+        return "slds-dropdown slds-dropdown_length-" + this._dropdownLength + " slds-dropdown_fluid dropdown";
+    }
+
     get labelClass () {
         if (this.label && this.label != '') {
             return "slds-form-element__label slds-show";
@@ -287,7 +310,7 @@ export default class Dropdown extends LightningElement {
     handleInputKeyUpEvent(event) {
         handleInputKeyUp({
             event               : event,
-            currentIndex        : this.keyboardIndex,
+            currentIndex        : this._keyboardIndex,
             length              : this._options.length,
             dropdownInterface   : this._keyboardInterface,
         });
@@ -314,21 +337,33 @@ export default class Dropdown extends LightningElement {
             },
 
             moveHilightToIndex(newIndex) {
-                let oldElement = that.getElementById(that.getIdByIndex(that.keyboardIndex));
-                that.switchOptionHighlight(oldElement, false);
+                that.clearKeyboardIndexAndSelection();
 
-                that.keyboardIndex = newIndex;
-                let newElement = that.getElementById(that.getIdByIndex(that.keyboardIndex));
+                that._keyboardIndex = newIndex;
+                let newElement = that.getElementById(that.getIdByIndex(that._keyboardIndex));
                 that.switchOptionHighlight(newElement, true);
                 that.scrollIntoView(newElement, that.listBoxElement);                
             }, 
 
             selectOptionByIndex(index) {
                 let selectedId = that.getIdByIndex(index);
-                that.selectOptionById(selectedId);
+                that.selectOptionById(selectedId); 
             },
 
+            getVisibleOptionsCount() {
+                if (!that._dropdownLength) {
+                    that._dropdownLength = 5;
+                }
+                return that._dropdownLength;
+            }
+
         };
+    }
+
+    clearKeyboardIndexAndSelection() {
+        let oldElement = this.getElementById(this.getIdByIndex(this._keyboardIndex));
+        this.switchOptionHighlight(oldElement, false);
+        this._keyboardIndex = -1;
     }
 
     getElementById(Id) {
