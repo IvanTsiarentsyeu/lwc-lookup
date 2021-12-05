@@ -3,8 +3,14 @@ public with sharing class DropdownLookupController {
     @AuraEnabled (cacheable=true)
     public static List<sObject> selectRecordsFromAnysObject(String sObjectName, String fields, String clause, String searchKey) {
         string query = makeQuery(sObjectName, fields, clause);  
-        if (query.length()==0) return new List<sObject>();
-        if (searchKey==null) searchKey = '';
+        
+        if (query.length()==0) {
+            return new List<sObject>();
+        }
+        if (searchKey==null) {
+            searchKey = '';
+        }
+
         String search = '%'+ searchKey +'%';
         try {
             return Database.query(query);
@@ -15,12 +21,14 @@ public with sharing class DropdownLookupController {
     }
 
     public static String makeQuery(String sObjectName, String fields, String clause) {
-        if (sObjectNameIsBad(sObjectName)) return '';
-
+        if (sObjectNameIsBad(sObjectName)) {
+            return '';
+        }
         List<String> fieldsList = makeListFromString(fields);
         List<String> validatedFieldsList = validateFields(sObjectName, fieldsList);
-        if  (validatedFieldsList.size() == 0) return '';
-
+        if  (validatedFieldsList.size() == 0) {
+            return '';
+        }
         String validatedFieldsString = makeStringFromList(validatedFieldsList);
 
         String query = 'SELECT ' + validatedFieldsString + ' FROM '+ sObjectName + ' WHERE ' + validatedFieldsList[0] +' LIKE :search';
@@ -70,8 +78,13 @@ public with sharing class DropdownLookupController {
     }
 
     private static Boolean sObjectNameIsBad(String sObjectName) {
-        if (sObjectName==null) return true;
-        if (sObjectName.length()==0) return true;
+        if (sObjectName==null) {
+            return true;
+        }
+        if (sObjectName.length()==0) {
+            return true;
+        }
+
         Map<String, Schema.SObjectType> allSobjects = Schema.getGlobalDescribe();
         Set<String> validSObjectNames = allSobjects.keySet();
         return ! validSObjectNames.contains(sObjectName.toLowerCase());
